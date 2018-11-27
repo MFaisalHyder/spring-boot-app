@@ -1,0 +1,19 @@
+package com.spring.project.manager;
+
+import com.spring.project.entity.Employee;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+
+public interface HomePageManager {
+
+    String greetUser(String name);
+
+    List<Employee> findUserByFirstName(String firstName);
+
+    List<Employee> findUserByLastName(String lastName);
+
+    Employee findByEmiratesIDNumber(String emiratesIDNumber);
+
+    LinkedHashMap<String, Object> findAllUsers();
+}

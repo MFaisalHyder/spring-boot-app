@@ -1,0 +1,115 @@
+{
+  "configuration": {
+    "name": "LoggingConfig",
+    "properties": {
+      "property": [
+        {
+          "name": "log-path",
+          "value": "logs"
+        },
+        {
+          "name": "archive",
+          "value": "${log-path}/archive"
+        }
+      ]
+    },
+    "appenders": {
+      "Console": {
+        "name": "Console-Appender",
+        "target": "SYSTEM_OUT",
+        "PatternLayout": {
+          "pattern": "|%d{yyyy-MM-dd HH:mm:ss.SSS}| [%t] %highlight{[%-5level]}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} - %msg%n",
+          "disableAnsi": "false"
+        }
+      },
+      "File": {
+        "name": "File-Appender",
+        "fileName": "${log-path}/logfile.log",
+        "PatternLayout": {
+          "pattern": "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
+        }
+      },
+      "RollingFile": {
+        "name": "RollingFile-Appender",
+        "fileName": "${log-path}/rollingfile.log",
+        "filePattern": "${archive}/rollingfile.%d{yyyy-MM-dd hh-mm-ss}.log",
+        "PatternLayout": {
+          "pattern": "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
+        },
+        /**
+        This way by setting filters we can select only which level needs to be logged, keep in mind this is threshold!
+        It is meant for only enabling/disabling specific level logs
+        */
+        "ThresholdFilter": [
+          //eg: This is will log only "debug" level logs. Given we have set RollingFile-Appender's level as debug
+          /*
+          {
+            "level": "info",
+            "onMatch": "DENY",
+            "onMismatch": "NEUTRAL"
+          },
+          {
+            "level": "warn",
+            "onMatch": "DENY",
+            "onMismatch": "NEUTRAL"
+          }
+          */
+
+          //eg: This is will log only "warn" level logs. Given we have set RollingFile-Appender's level as warn
+          /*
+          {
+            "level": "error",
+            "onMatch": "DENY",
+            "onMismatch": "NEUTRAL"
+          },
+          {
+            "level": "fatal",
+            "onMatch": "DENY",
+            "onMismatch": "NEUTRAL"
+          }
+          */
+        ],
+        "Policies": {
+          "SizeBasedTriggeringPolicy": {
+            "size": "20 KB"
+          }
+        },
+        "DefaultRolloverStrategy": {
+          "max": "30"
+        }
+      }
+    },
+    "loggers": {
+      //application specific logger
+      "logger": {
+        "name": "com.spring.project",
+        /*
+        Root property for package specific logging, its precedence is higher than specific level in appender-ref
+        if we set this as some higher precedence and specific value is having lower precedence than log4j2 won't log
+        */
+        "level": "debug",
+        "additivity": "false",
+        "appender-ref": [
+          {
+            "ref": "Console-Appender",
+            "level": "debug"
+          },
+          {
+            "ref": "File-Appender",
+            "level": "error"
+          },
+          {
+            "ref": "RollingFile-Appender",
+            "level": "debug"
+          }
+        ]
+      },
+      "root": {
+        "level": "info",
+        "appender-ref": {
+          "ref": "Console-Appender"
+        }
+      }
+    }
+  }
+}
