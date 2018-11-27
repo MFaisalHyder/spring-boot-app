@@ -1,2 +1,2 @@
 # spring-boot-app
-Spring Boot Application
+A Production ready Spring Boot Application
