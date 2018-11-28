@@ -1,2 +1,2 @@
 # spring-boot-app
-A Production ready Spring Boot Application
+An Enterprise grade Spring Boot Application
