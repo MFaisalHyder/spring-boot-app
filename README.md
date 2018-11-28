@@ -33,7 +33,7 @@ You are expected to have a basic knowlwdge of how Spring Framework works, what i
 ## Built With
 
 * Java8(1.8u66) - [Latest Java8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* Spring Framework-5(5.1.3.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework/spring-web)
+* Spring Framework-5(5.1.2.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework/spring-web)
 * Spring Boot-2(2.1.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot)
 * Spring Data JPA(2.1.2.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa)
 * Hibernate(5.3.7.Final) - [LatestVersion](https://mvnrepository.com/artifact/org.hibernate/hibernate-core)
