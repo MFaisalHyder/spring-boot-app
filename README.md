@@ -40,6 +40,7 @@ You are expected to have a basic knowlwdge of how Spring Framework works, what i
 * H2 Database(1.4.197) - [LatestVersion](https://mvnrepository.com/artifact/com.h2database/h2)
 * JUnit5(5.3.2) - [LatestVersion](https://mvnrepository.com/artifact/org.junit.jupiter)
 * Mockito(2.23.4) - [LatestVersion](https://mvnrepository.com/artifact/org.mockito/mockito-core)
+* Logging [log4j2(2.11.1) - [LatestVersion](https://mvnrepository.com/artifact/org.apache.logging.log4j)]
 * Tomcat Embedded(2.1.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat)
 * Dependency Management [Gradle(5.0) - [LatestVersion](https://gradle.org/releases/)]
 
