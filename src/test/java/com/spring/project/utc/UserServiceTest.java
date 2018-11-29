@@ -2,7 +2,7 @@ package com.spring.project.utc;
 
 import com.spring.project.entity.Employee;
 import com.spring.project.repository.UserRepository;
-import com.spring.project.service.HomePageService;
+import com.spring.project.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,14 +24,14 @@ import static org.mockito.Mockito.when;
  * code/logic written in code rather than data it uses or manipulates.
  */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("HomePageServiceTest")
-class HomePageServiceTest {
+@DisplayName("UserServiceTest")
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
 
     @InjectMocks
-    private HomePageService homePageService;
+    private UserService userService;
 
     @Test
     @DisplayName("Test getAllUsers()")
@@ -49,7 +49,7 @@ class HomePageServiceTest {
 
         when(userRepository.findAll()).thenReturn(employeeList);
 
-        List<Employee> employees = (List<Employee>) homePageService.findAllUsers().get("usersList");
+        List<Employee> employees = (List<Employee>) userService.findAllUsers().get("usersList");
 
         assertAll("It should return what we have added above",
                 () -> assertNotNull(employee),

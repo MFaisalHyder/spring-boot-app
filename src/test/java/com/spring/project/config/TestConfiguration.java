@@ -25,7 +25,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableJpaRepositories(basePackages = {"com.spring.project"})
-@ComponentScan(basePackages = {"com.spring.project.controller"})
+@ComponentScan(basePackages = {"com.spring.project"})
 @Sql(value = {"classpath:import.sql"})
 @PropertySource(value = {"classpath:spring-wmt.properties"})
 public class TestConfiguration {

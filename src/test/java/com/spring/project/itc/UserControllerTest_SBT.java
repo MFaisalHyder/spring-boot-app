@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -17,15 +16,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * In integration testing we are running complete HTTP servers and testing our complete feature from controller to DB
  * i.e. tests are carried out with actual environment instead of mocks.
  */
-@DisplayName("HomePageControllerTest_SBT - SpringBootTest")
-class HomePageControllerTest_SBT extends BaseTest_SBT {
+@DisplayName("UserControllerTest_SBT - SpringBootTest")
+class UserControllerTest_SBT extends BaseTest_SBT {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void getUsersList() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/users/listAll").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/user/listAll").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
 

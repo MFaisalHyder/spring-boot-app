@@ -2,14 +2,13 @@ package com.spring.project.itc;
 
 import com.spring.project.config.BaseTest_WMT;
 import com.spring.project.constant.ApplicationConstants;
-import com.spring.project.controller.HomePageController;
+import com.spring.project.controller.UserController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,20 +25,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Configuration is done properly, ComponentScan, JpaRepositories, Beans, and DataSource.</p>
  */
 
-@WebMvcTest(value = HomePageController.class)
-@DisplayName("HomePageControllerTest_WMT - WMT")
-class HomePageControllerTest_WMT extends BaseTest_WMT {
-
+@WebMvcTest(value = UserController.class)
+@DisplayName("UserControllerTest_WMT - WebMVCTest")
+class UserControllerTest_WMT extends BaseTest_WMT {
+    /*
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    /*
     @Before
     void setup() throws Exception {
         mockMvc = webAppContextSetup(webApplicationContext).build();
 
         //This is for just loading a single controller class
-        //this.mockMvc = standaloneSetup(HomePageController.class).build();
+        //this.mockMvc = standaloneSetup(UserController.class).build();
     }
     */
 
@@ -47,12 +45,20 @@ class HomePageControllerTest_WMT extends BaseTest_WMT {
     private MockMvc mockMvc;
 
     @Test
-    void getUsersList() throws Exception {
-        mockMvc.perform(get("/users/listAll").accept(MediaType.APPLICATION_JSON))
+    void getUsersListTest() throws Exception {
+        mockMvc.perform(get("/user/listAll").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(ApplicationConstants.GeneralConstants.SUCCESS.getValue())))
                 .andDo(print());
 
     }
 
+    @Test
+    void getUserByEmiratesIDTest() throws Exception {
+        mockMvc.perform(get("/user/ABCDEF12345").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("ABCDEF12345")))
+                .andDo(print());
+
+    }
 }
