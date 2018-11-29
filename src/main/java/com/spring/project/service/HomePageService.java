@@ -3,6 +3,7 @@ package com.spring.project.service;
 import com.spring.project.Application;
 import com.spring.project.constant.ApplicationConstants;
 import com.spring.project.entity.Employee;
+import com.spring.project.exception.UserNotFoundException;
 import com.spring.project.manager.HomePageManager;
 import com.spring.project.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -69,24 +70,25 @@ public class HomePageService implements HomePageManager {
     }
 
     @Override
-    public Employee findByEmiratesIDNumber(String emiratesIDNumber) {
-        homePageServiceLogger.info("HomePageService.findByEmiratesIDNumber() :: method call ---- STARTS");
+    public Employee findByEmiratesIDNumber(String emiratesID) {
+        homePageServiceLogger.info("HomePageService.findByEmiratesID() :: method call ---- STARTS");
 
         Employee userFoundFromDB = null;
 
-        if (StringUtils.isEmpty(emiratesIDNumber)) {
-            return null;
-        }
-
         try {
-            userFoundFromDB = userRepository.findByEmiratesID(emiratesIDNumber);
+            userFoundFromDB = userRepository.findByEmiratesID(emiratesID);
 
         } catch (Exception exception) {
-            System.out.println("findByEmiratesIDNumber() :: FAILED" + exception);
+            homePageServiceLogger.error("findByEmiratesID() :: FAILED" + exception);
         }
 
+        if (userFoundFromDB == null) {
+            homePageServiceLogger.error("User not found for given EmiratesID = " + emiratesID);
 
-        homePageServiceLogger.info("HomePageService.findByEmiratesIDNumber() :: method call ---- ENDS");
+            throw new UserNotFoundException();
+        }
+
+        homePageServiceLogger.info("HomePageService.findByEmiratesID() :: method call ---- ENDS");
 
         return userFoundFromDB;
     }
