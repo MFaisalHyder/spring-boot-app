@@ -25,15 +25,21 @@ public class UserService implements UserManager {
 
     @Override
     public String greetUser(String name) {
+        userServiceLogger.info("UserService.greetUser() :: method call ---- STARTS");
+
         if (StringUtils.isEmpty(name)) {
             return ApplicationConstants.HomePageConstants.USER_NAME_NOT_FOUND.getValue();
         }
+
+        userServiceLogger.info("UserService.greetUser() :: method call ---- ENDS");
 
         return "Welcome, " + name;
     }
 
     @Override
     public List<Employee> findUserByFirstName(String firstName) {
+        userServiceLogger.info("UserService.findUserByFirstName() :: method call ---- STARTS");
+
         List<Employee> usersFoundFromDB = new ArrayList<>();
 
         if (StringUtils.isEmpty(firstName)) {
@@ -46,6 +52,8 @@ public class UserService implements UserManager {
         } catch (Exception exception) {
             System.out.println("findUserByFirstName() :: FAILED" + exception);
         }
+
+        userServiceLogger.info("UserService.findUserByFirstName() :: method call ---- STARTS");
 
         return usersFoundFromDB;
     }

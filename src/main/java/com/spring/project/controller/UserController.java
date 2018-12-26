@@ -47,6 +47,8 @@ public class UserController {
 
         Employee employee = userManager.findByEmiratesIDNumber(emiratesID);
 
+        logger.info("UserController.findUserByEmiratesID()[/{emiratesID}] :: method call ---- ENDS");
+
         return new ResponseEntity<>(employee, HttpStatus.OK);
 
     }
