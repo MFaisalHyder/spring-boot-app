@@ -89,4 +89,14 @@ public class Response implements Serializable {
 
     }
 
+    public static Response prepareErrorResponse(HttpStatus status, String errorCode, String errorMessage) {
+        Response errorResponse = new Response.ResponseBuilder()
+                .setStatus(status)
+                .setErrorCode(errorCode)
+                .setMessage(errorMessage)
+                .build();
+
+        return errorResponse;
+    }
+
 }
