@@ -55,7 +55,7 @@ class UserControllerTest_WMT extends BaseTest_WMT {
 
     @Test
     void getUserByEmiratesIDTest() throws Exception {
-        mockMvc.perform(get("/user/ABCDEF12345").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/user/emiratesID/ABCDEF12345").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("ABCDEF12345")))
                 .andDo(print());
