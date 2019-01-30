@@ -1,11 +1,9 @@
 package com.spring.project.config;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import com.spring.project.constant.ApplicationConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -13,22 +11,32 @@ import org.springframework.util.StringUtils;
 
 @Configuration
 @PropertySource(ignoreResourceNotFound = true, value = "classpath:app_messages.properties")
-public class PropertiesConfiguration {
+public class PropertiesConfig {
 
-    private static final Logger userServiceLogger = LogManager.getLogger(PropertiesConfiguration.class);
+    private static final Logger propertiesConfigLogger = LogManager.getLogger(PropertiesConfig.class);
+
     @Autowired
     private Environment environment;
 
-    public static String getProperty(String propertyKey) {
+    public String getProperty(String propertyKey) {
+
         if (StringUtils.isEmpty(propertyKey)) {
+            propertiesConfigLogger.error("PropertiesConfig.getProperty() :: propertyKey is NULL");
 
+            return null;
         }
+
+        String propertyValue = ApplicationConstants.GeneralConstants.EMPTY_STRING.getValue();
+
         try {
+            propertyValue = environment.getProperty(propertyKey);
 
-        } catch () {
-
+        } catch (Exception exception) {
+            propertiesConfigLogger.error("PropertiesConfig.getProperty() :: Unable to find value for the key = '{}'", propertyKey);
+            propertiesConfigLogger.error(exception);
         }
 
+        return propertyValue;
     }
 
 }
