@@ -21,12 +21,12 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Response> userNotFoundExceptionHandler() {
+    public ResponseEntity<Response> userNotFoundExceptionHandler(UserNotFoundException userNotFoundException) {
         Response exceptionResponse = new Response.ResponseBuilder()
                 .setStatus(HttpStatus.NOT_FOUND)
                 .setErrorCode("UNF")
-                .setMessage("TEST")
-                .setDetails("TEST")
+                .setMessage(userNotFoundException.getMessage())
+                .setDetails(userNotFoundException.getMessage())
                 .build();
 
         return new ResponseEntity<>(exceptionResponse, exceptionResponse.getHttpStatus());
