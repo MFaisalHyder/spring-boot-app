@@ -19,6 +19,7 @@ public class Log4j2Config {
         logger.info("This is an info message");
         logger.warn("This is a warn message");
         logger.error("This is an error message");
+        logger.error("This is an {} message", "error 2");
         logger.fatal("This is a fatal message");
         logger.info("**********-------------END-------------**********");
     }
