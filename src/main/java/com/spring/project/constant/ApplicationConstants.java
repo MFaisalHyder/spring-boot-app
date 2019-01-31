@@ -10,7 +10,8 @@ public class ApplicationConstants {
         SUCCESS("Success"),
         FAILED("Failed"),
         ZERO_RECORDS("No records found"),
-        EMPTY_STRING("");
+        EMPTY_STRING(""),
+        MISSING_PARAMETER("Required parameter is missing");
 
         private String value;
 
@@ -36,4 +37,21 @@ public class ApplicationConstants {
             return value;
         }
     }
+
+    public enum ErrorCodes {
+        MISSING_PARAMETER("MISSING_PARAMETER"),
+        ZERO_RECORD("ZERO_RECORD"),
+        GENERAL_ERROR("500-GENERAL_ERROR");
+
+        private String value;
+
+        ErrorCodes(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
 }
