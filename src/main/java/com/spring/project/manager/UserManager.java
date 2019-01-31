@@ -11,8 +11,6 @@ public interface UserManager {
 
     List<Employee> findUserByFirstName(String firstName);
 
-    List<Employee> findUserByLastName(String lastName);
-
     Employee findByEmiratesIDNumber(String emiratesIDNumber);
 
     LinkedHashMap<String, Object> findAllUsers();

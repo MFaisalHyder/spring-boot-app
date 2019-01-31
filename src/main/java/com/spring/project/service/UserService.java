@@ -1,7 +1,11 @@
 package com.spring.project.service;
 
+import com.spring.project.config.PropertiesConfig;
 import com.spring.project.constant.ApplicationConstants;
+import com.spring.project.constant.ApplicationProperties;
 import com.spring.project.entity.Employee;
+import com.spring.project.exception.GeneralException;
+import com.spring.project.exception.InvalidInputException;
 import com.spring.project.exception.UserNotFoundException;
 import com.spring.project.manager.UserManager;
 import com.spring.project.repository.UserRepository;
@@ -10,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sun.java2d.loops.FillRect;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -23,12 +28,17 @@ public class UserService implements UserManager {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PropertiesConfig propertiesConfig;
+
     @Override
     public String greetUser(String name) {
         userServiceLogger.info("UserService.greetUser() :: method call ---- STARTS");
 
         if (StringUtils.isEmpty(name)) {
-            return ApplicationConstants.HomePageConstants.USER_NAME_NOT_FOUND.getValue();
+            userServiceLogger.error("UserService.greetUser() :: User name is unavailable = '{}'", name);
+
+            throw new InvalidInputException("User name is missing = " + name);
         }
 
         userServiceLogger.info("UserService.greetUser() :: method call ---- ENDS");
@@ -40,72 +50,65 @@ public class UserService implements UserManager {
     public List<Employee> findUserByFirstName(String firstName) {
         userServiceLogger.info("UserService.findUserByFirstName() :: method call ---- STARTS");
 
-        List<Employee> usersFoundFromDB = new ArrayList<>();
+        List<Employee> usersFoundFromDB;
 
         if (StringUtils.isEmpty(firstName)) {
-            return null;
+            userServiceLogger.error("UserService.findUserByFirstName() :: User first name is unavailable = '{}'", firstName);
+
+            throw new InvalidInputException("User first name is missing = " + firstName);
         }
 
         try {
             usersFoundFromDB = userRepository.findByFirstName(firstName);
 
         } catch (Exception exception) {
-            System.out.println("findUserByFirstName() :: FAILED" + exception);
+            userServiceLogger.error("UserService.findUserByFirstName() ::  Some error occurred while finding user");
+            userServiceLogger.error(exception);
+
+            throw new GeneralException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_FIND_USER.getValue()));
         }
 
-        userServiceLogger.info("UserService.findUserByFirstName() :: method call ---- STARTS");
-
-        return usersFoundFromDB;
-    }
-
-    @Override
-    public List<Employee> findUserByLastName(String lastName) {
-        List<Employee> usersFoundFromDB = new ArrayList<>();
-
-        if (StringUtils.isEmpty(lastName)) {
-            return null;
-        }
-
-        try {
-            usersFoundFromDB = userRepository.findByLastName(lastName);
-
-        } catch (Exception exception) {
-            System.out.println("findUserByLastName() :: FAILED" + exception);
-        }
+        userServiceLogger.info("UserService.findUserByFirstName() :: method call ---- ENDS");
 
         return usersFoundFromDB;
     }
 
     @Override
     public Employee findByEmiratesIDNumber(String emiratesID) {
-        userServiceLogger.info("HomePageService.findByEmiratesID() :: method call ---- STARTS");
+        userServiceLogger.info("UserService.findByEmiratesID() :: method call ---- STARTS");
 
-        Employee userFoundFromDB = null;
+        Employee userFoundFromDB;
 
         try {
             userFoundFromDB = userRepository.findByEmiratesID(emiratesID);
 
         } catch (Exception exception) {
-            userServiceLogger.error("findByEmiratesID() :: FAILED" + exception);
+            userServiceLogger.error("UserService.findByEmiratesIDNumber() ::  Some error occurred while finding user");
+            userServiceLogger.error(exception);
+
+            throw new GeneralException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_FIND_USER.getValue()),
+                    exception.getMessage());
+
         }
 
         if (userFoundFromDB == null) {
             userServiceLogger.error("User not found for given EmiratesID = " + emiratesID);
 
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(propertiesConfig.getProperty(ApplicationProperties.Messages.NO_USER_FOUND.getValue()) + " for EmiratesID = " + emiratesID
+                    , propertiesConfig.getProperty(ApplicationProperties.Messages.NO_USER_FOUND_EMIRATES_ID.getValue()));
         }
 
-        userServiceLogger.info("HomePageService.findByEmiratesID() :: method call ---- ENDS");
+        userServiceLogger.info("UserService.findByEmiratesID() :: method call ---- ENDS");
 
         return userFoundFromDB;
     }
 
     @Override
     public LinkedHashMap<String, Object> findAllUsers() {
-        userServiceLogger.info("HomePageService.findAllUsers() :: method call ---- STARTS");
+        userServiceLogger.info("UserService.findAllUsers() :: method call ---- STARTS");
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-        List<Employee> allUsersInDB = null;
+        List<Employee> allUsersInDB;
         String status;
 
         try {
@@ -116,15 +119,17 @@ public class UserService implements UserManager {
                     : ApplicationConstants.GeneralConstants.ZERO_RECORDS.getValue();
 
         } catch (Exception exception) {
-            userServiceLogger.error("HomePageService.findAllUsers() :: unable to find all users list ---- FAILED \n" + exception);
+            userServiceLogger.error("UserService.findAllUsers() :: Some error occurred while finding users list");
+            userServiceLogger.error(exception);
 
-            status = ApplicationConstants.GeneralConstants.FAILED.getValue();
+            throw new GeneralException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_FIND_USER_LIST.getValue()));
+
         }
 
         result.put("status", status);
         result.put("usersList", allUsersInDB);
 
-        userServiceLogger.info("HomePageService.findAllUsers() :: method call ---- ENDS");
+        userServiceLogger.info("UserService.findAllUsers() :: method call ---- ENDS");
 
         return result;
     }
