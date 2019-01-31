@@ -1,7 +1,11 @@
 package com.spring.project.controller;
 
+import com.spring.project.config.PropertiesConfig;
+import com.spring.project.constant.ApplicationConstants;
+import com.spring.project.constant.ApplicationProperties;
+import com.spring.project.dto.Response;
 import com.spring.project.entity.Employee;
-import com.spring.project.exception.UserNotFoundException;
+import com.spring.project.exception.InvalidInputException;
 import com.spring.project.manager.UserManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,33 +25,39 @@ import java.util.Map;
 @RequestMapping(value = "/user")
 public class UserController {
 
-    private static Logger logger = LogManager.getLogger(UserController.class);
+    private static Logger userControllerLogger = LogManager.getLogger(UserController.class);
+
+    @Autowired
+    private PropertiesConfig propertiesConfig;
 
     @Autowired
     private UserManager userManager;
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getUsersList() {
-        logger.info("UserController.getUsersList()[/listAll] :: method call ---- STARTS");
+        userControllerLogger.info("UserController.getUsersList()[/listAll] :: method call ---- STARTS");
 
         LinkedHashMap<String, Object> result = userManager.findAllUsers();
 
-        logger.info("UserController.getUsersList()[/listAll] :: method call ---- ENDS");
+        userControllerLogger.info("UserController.getUsersList()[/listAll] :: method call ---- ENDS");
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{emiratesID}", method = RequestMethod.GET)
+    @RequestMapping(value = "/emiratesID/{emiratesID}", method = RequestMethod.GET)
     public ResponseEntity<Object> findUserByEmiratesID(@PathVariable(value = "emiratesID") String emiratesID) {
-        logger.info("UserController.findUserByEmiratesID()[/{emiratesID}] :: method call ---- STARTS");
+        userControllerLogger.info("UserController.findUserByEmiratesID()[/emiratesID] :: method call ---- STARTS");
 
         if (StringUtils.isEmpty(emiratesID)) {
-            throw new UserNotFoundException();
+            userControllerLogger.error("UserController.findUserByEmiratesID()[/emiratesID/] :: EmiratesID is unavailable = '{}'", emiratesID);
+
+            throw new InvalidInputException(propertiesConfig.getProperty(ApplicationProperties.Messages.PARAMETER_MISSING.getValue())
+                    , propertiesConfig.getProperty(ApplicationProperties.Messages.PARAMETER_MISSING_EMIRATES_ID.getValue()));
         }
 
         Employee employee = userManager.findByEmiratesIDNumber(emiratesID);
 
-        logger.info("UserController.findUserByEmiratesID()[/{emiratesID}] :: method call ---- ENDS");
+        userControllerLogger.info("UserController.findUserByEmiratesID()[/emiratesID/] :: method call ---- ENDS");
 
         return new ResponseEntity<>(employee, HttpStatus.OK);
 
