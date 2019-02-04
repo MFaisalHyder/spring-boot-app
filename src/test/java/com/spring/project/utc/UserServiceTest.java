@@ -49,6 +49,7 @@ class UserServiceTest {
 
         when(userRepository.findAll()).thenReturn(employeeList);
 
+        @SuppressWarnings({"unchecked"})
         List<Employee> employees = (List<Employee>) userService.findAllUsers().get("usersList");
 
         assertAll("It should return what we have added above",

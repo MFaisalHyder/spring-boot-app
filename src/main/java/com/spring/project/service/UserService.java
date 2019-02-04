@@ -14,9 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import sun.java2d.loops.FillRect;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
