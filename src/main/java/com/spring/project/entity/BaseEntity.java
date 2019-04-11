@@ -1,24 +1,45 @@
 package com.spring.project.entity;
 
-
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+@EntityListeners(AuditingEntityListener.class)
+abstract class BaseEntity implements Serializable {
+
+    /**
+     * For CreatedBy and ModifiedBy:
+     * We can use Type as per business requirement or simply we can use ID or any unique attribute of User present
+     * in SecurityContextHolder as Principal User.
+     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ID", updatable = false, nullable = false)
+    @Column(name = "ID", nullable = false, updatable = false)
     private Long ID;
 
+    @CreatedBy
+    @Column(name = "CreatedBy", nullable = false, updatable = false)
+    private String createdBy;
+
     @CreatedDate
-    @Column(name = "CreatedDate")
+    @Column(name = "CreatedDate", nullable = false, updatable = false)
     private LocalDateTime createdDate;
+
+    @LastModifiedBy
+    @Column(name = "ModifiedBy")
+    private String modifiedBy;
+
+    @LastModifiedDate
+    @Column(name = "ModifiedDate")
+    private LocalDateTime modifiedDate;
 
     public Long getID() {
         return ID;
@@ -28,12 +49,36 @@ public class BaseEntity implements Serializable {
         this.ID = ID;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(LocalDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
 }

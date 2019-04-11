@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @Table(name = "EMPLOYEE")
 public class Employee extends BaseEntity {
 
-    @Column(name = "EmiratesID", unique = true)
+    @Column(name = "EmiratesID", unique = true, nullable = false)
     private String emiratesID;
 
     @Column(name = "FirstName")
@@ -16,6 +16,12 @@ public class Employee extends BaseEntity {
 
     @Column(name = "LastName")
     private String lastName;
+
+    @Column(name = "StaffID", nullable = false)
+    private String staffID;
+
+    @Column(name = "Password", nullable = false)
+    private String password;
 
     public String getEmiratesID() {
         return emiratesID;
@@ -39,6 +45,22 @@ public class Employee extends BaseEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getStaffID() {
+        return staffID;
+    }
+
+    public void setStaffID(String staffID) {
+        this.staffID = staffID;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
