@@ -5,6 +5,7 @@ import com.spring.project.dto.Response;
 import com.spring.project.exception.GeneralException;
 import com.spring.project.exception.InvalidInputException;
 import com.spring.project.exception.UserNotFoundException;
+import com.spring.project.exception.UserNotRegisteredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -54,6 +55,18 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
                 .setErrorCode(ApplicationConstants.ErrorCodes.GENERAL_ERROR.getValue())
                 .setMessage(generalException.getMessage())
                 .setDetails(generalException.getDetail())
+                .build();
+
+        return new ResponseEntity<>(exceptionResponse, exceptionResponse.getHttpStatus());
+    }
+
+    @ExceptionHandler(UserNotRegisteredException.class)
+    public ResponseEntity<Response> generalExceptionHandler(UserNotRegisteredException userNotRegisteredException) {
+        Response exceptionResponse = new Response.ResponseBuilder()
+                .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .setErrorCode(ApplicationConstants.ErrorCodes.USER_NOT_REGISTERED.getValue())
+                .setMessage(userNotRegisteredException.getMessage())
+                .setDetails(userNotRegisteredException.getDetail())
                 .build();
 
         return new ResponseEntity<>(exceptionResponse, exceptionResponse.getHttpStatus());
