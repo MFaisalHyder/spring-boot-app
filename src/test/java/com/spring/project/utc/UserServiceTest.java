@@ -24,9 +24,12 @@ class UserServiceTest extends BaseTest {
     private static final String PASSWORD = "12345ABCDEF";
 
     private static EmployeeDTO employee;
+    private UserManager userManager;
 
     @Autowired
-    private UserManager userManager;
+    public UserServiceTest(final UserManager userManager) {
+        this.userManager = userManager;
+    }
 
     /**
      * We need to declare such methods as static if we are not using @TestInstance for Test class
