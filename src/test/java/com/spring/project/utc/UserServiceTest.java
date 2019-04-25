@@ -1,62 +1,91 @@
 package com.spring.project.utc;
 
-import com.spring.project.entity.Employee;
-import com.spring.project.repository.UserRepository;
-import com.spring.project.service.UserService;
+import com.spring.project.config.BaseTest;
+import com.spring.project.constant.ApplicationConstants;
+import com.spring.project.dto.EmployeeDTO;
+import com.spring.project.manager.UserManager;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit test cases are carried out using Mockito framework. Since it is Unit testing, we are more focused on our
- * code/logic written in code rather than data it uses or manipulates.
- */
-@ExtendWith(MockitoExtension.class)
 @DisplayName("UserServiceTest")
-class UserServiceTest {
+class UserServiceTest extends BaseTest {
 
-    @Mock
-    private UserRepository userRepository;
+    private static final String EMIRATES_ID = "ABCDEFT12345";
+    private static final String FIRST_NAME = "Muhammad Faisal";
+    private static final String LAST_NAME = "Hyder";
+    private static final String STAFF_ID = "SE_007";
+    private static final String PASSWORD = "12345ABCDEF";
 
-    @InjectMocks
-    private UserService userService;
+    private static EmployeeDTO employee;
+
+    @Autowired
+    private UserManager userManager;
+
+    /**
+     * We need to declare such methods as static if we are not using @TestInstance for Test class
+     * But static should be avoided as it will not be cleaned up when all test cases are executed
+     */
+    @BeforeAll
+    void beforeAll() {
+        employee = new EmployeeDTO();
+
+        employee.setEmiratesID(EMIRATES_ID + "001");
+        employee.setFirstName(FIRST_NAME);
+        employee.setLastName(LAST_NAME);
+        employee.setStaffID(STAFF_ID + "_001");
+        employee.setPassword(PASSWORD);
+    }
 
     @Test
-    @DisplayName("Test getAllUsers()")
-    void testGetAllUsers() {
-        List<Employee> employeeList = new ArrayList<>();
+    void findUserByFirstNameTest() throws Exception {
+        List<EmployeeDTO> employees = userManager.findUserByFirstName(FIRST_NAME);
 
-        Employee employee = new Employee();
-        employee.setID(1L);
-        employee.setCreatedDate(LocalDateTime.now());
-        employee.setEmiratesID("ABCDEF12345");
-        employee.setFirstName("Muhammad Faisal");
-        employee.setLastName("Hyder");
+        assertNotNull(employees);
+        assertTrue(employees.size() > 1);
 
-        employeeList.add(employee);
+    }
 
-        when(userRepository.findAll()).thenReturn(employeeList);
+    @Test
+    void findByEmiratesIDNumberTest() throws Exception {
+        EmployeeDTO employee = userManager.findByEmiratesIDNumber(EMIRATES_ID);
 
-        @SuppressWarnings({"unchecked"})
-        List<Employee> employees = (List<Employee>) userService.findAllUsers().get("usersList");
+        assertNotNull(employee);
+        assertNotNull(employee.getCreatedDate());
+        assertNotNull(employee.getCreatedBy());
+        assertEquals(EMIRATES_ID, employee.getEmiratesID());
 
-        assertAll("It should return what we have added above",
-                () -> assertNotNull(employee),
-                () -> assertEquals(1, employees.size()),
-                () -> assertEquals("ABCDEF12345", employees.get(0).getEmiratesID()),
-                () -> assertEquals("Muhammad Faisal", employees.get(0).getFirstName())
+    }
+
+    @Test
+    @SuppressWarnings({"unchecked"})
+    void findAllUsersTest() throws Exception {
+        Map<String, Object> result = userManager.findAllUsers();
+
+        assertNotNull(result);
+        assertNotNull(result.get("status"));
+        assertEquals(result.get("status"), ApplicationConstants.GeneralConstants.SUCCESS.getValue());
+        assertNotNull(result.get("usersList"));
+
+        List<EmployeeDTO> employees = (List) result.get("usersList");
+        assertNotNull(employees);
+
+    }
+
+    @Test
+    void registerUserTest() throws Exception {
+        EmployeeDTO registeredEmployee = userManager.registerUser(employee);
+
+        assertAll("Registered employee should not be null",
+                () -> assertNotNull(registeredEmployee),
+                () -> assertNotNull(registeredEmployee.getCreatedBy()),
+                () -> assertNotNull(registeredEmployee.getCreatedDate())
         );
 
     }
