@@ -41,8 +41,12 @@ class PasswordUtilTest {
     }
     */
 
+    private final PasswordUtil passwordUtil;
+
     @Autowired
-    private PasswordUtil passwordUtil;
+    public PasswordUtilTest(final PasswordUtil passwordUtil) {
+        this.passwordUtil = passwordUtil;
+    }
 
     @Test
     void testPasswordUtility() {
