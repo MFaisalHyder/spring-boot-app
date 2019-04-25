@@ -1,11 +1,13 @@
 package com.spring.project.utility;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@Import({BCryptPasswordEncoder.class})
 public class PasswordUtil {
 
     private final BCryptPasswordEncoder passwordEncoder;
