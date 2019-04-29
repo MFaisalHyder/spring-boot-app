@@ -41,7 +41,9 @@ public class ApplicationConstants {
     public enum ErrorCodes {
         MISSING_PARAMETER("MISSING_PARAMETER"),
         ZERO_RECORD("ZERO_RECORD"),
-        GENERAL_ERROR("500-GENERAL_ERROR");
+        GENERAL_ERROR("500-GENERAL_ERROR"),
+        INVALID_PARAMETER("INVALID_PARAMETER"),
+        USER_NOT_REGISTERED("USER_NOT_REGISTERED");
 
         private String value;
 
