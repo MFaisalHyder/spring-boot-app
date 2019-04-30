@@ -2,13 +2,15 @@ package com.spring.project.dto;
 
 import java.io.Serializable;
 
-public class EmployeeDTO extends BaseDTO implements Serializable {
+public class EmployeeDTO extends BaseDTO {
 
     private String emiratesID;
     private String firstName;
     private String lastName;
+    private String email;
     private String staffID;
     private String password;
+    private RoleDTO role;
 
     public String getEmiratesID() {
         return emiratesID;
@@ -34,6 +36,14 @@ public class EmployeeDTO extends BaseDTO implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getStaffID() {
         return staffID;
     }
@@ -48,6 +58,14 @@ public class EmployeeDTO extends BaseDTO implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public RoleDTO getRole() {
+        return role;
+    }
+
+    public void setRole(RoleDTO role) {
+        this.role = role;
     }
 
 }

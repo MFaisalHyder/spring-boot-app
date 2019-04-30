@@ -1,14 +1,13 @@
 package com.spring.project.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "EMPLOYEE")
 public class Employee extends BaseEntity {
 
-    @Column(name = "EmiratesID", unique = true, nullable = false)
+    @Column(name = "EmiratesID", unique = true, nullable = false, updatable = false)
     private String emiratesID;
 
     @Column(name = "FirstName")
@@ -17,11 +16,18 @@ public class Employee extends BaseEntity {
     @Column(name = "LastName")
     private String lastName;
 
-    @Column(name = "StaffID", nullable = false)
+    @Column(name = "StaffID", unique = true, nullable = false, updatable = false)
     private String staffID;
+
+    @Column(name = "Email", unique = true, nullable = false)
+    private String email;
 
     @Column(name = "Password", nullable = false)
     private String password;
+
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "ROLE_ID")
+    private Role role;
 
     public String getEmiratesID() {
         return emiratesID;
@@ -55,12 +61,28 @@ public class Employee extends BaseEntity {
         this.staffID = staffID;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 }
