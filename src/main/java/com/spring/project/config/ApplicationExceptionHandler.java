@@ -2,10 +2,7 @@ package com.spring.project.config;
 
 import com.spring.project.constant.ApplicationConstants;
 import com.spring.project.dto.Response;
-import com.spring.project.exception.GeneralException;
-import com.spring.project.exception.InvalidInputException;
-import com.spring.project.exception.UserNotFoundException;
-import com.spring.project.exception.UserNotRegisteredException;
+import com.spring.project.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -37,7 +34,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
     @ExceptionHandler(InvalidInputException.class)
-    public ResponseEntity<Response> invalidRequestExceptionHandler(InvalidInputException invalidInputException) {
+    public ResponseEntity<Response> invalidInputExceptionHandler(InvalidInputException invalidInputException) {
         Response exceptionResponse = new Response.ResponseBuilder()
                 .setStatus(HttpStatus.BAD_REQUEST)
                 .setErrorCode(ApplicationConstants.ErrorCodes.MISSING_PARAMETER.getValue())
@@ -61,12 +58,24 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
     @ExceptionHandler(UserNotRegisteredException.class)
-    public ResponseEntity<Response> generalExceptionHandler(UserNotRegisteredException userNotRegisteredException) {
+    public ResponseEntity<Response> userNotRegisteredExceptionHandler(UserNotRegisteredException userNotRegisteredException) {
         Response exceptionResponse = new Response.ResponseBuilder()
                 .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .setErrorCode(ApplicationConstants.ErrorCodes.USER_NOT_REGISTERED.getValue())
                 .setMessage(userNotRegisteredException.getMessage())
                 .setDetails(userNotRegisteredException.getDetail())
+                .build();
+
+        return new ResponseEntity<>(exceptionResponse, exceptionResponse.getHttpStatus());
+    }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<Response> roleNotFoundExceptionHandler(RoleNotFoundException roleNotFoundException) {
+        Response exceptionResponse = new Response.ResponseBuilder()
+                .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .setErrorCode(ApplicationConstants.ErrorCodes.ZERO_RECORD.getValue())
+                .setMessage(roleNotFoundException.getMessage())
+                .setDetails(roleNotFoundException.getDetail())
                 .build();
 
         return new ResponseEntity<>(exceptionResponse, exceptionResponse.getHttpStatus());
