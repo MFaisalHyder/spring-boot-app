@@ -3,6 +3,7 @@ package com.spring.project.utc;
 import com.spring.project.config.BaseTest;
 import com.spring.project.constant.ApplicationConstants;
 import com.spring.project.dto.EmployeeDTO;
+import com.spring.project.dto.RoleDTO;
 import com.spring.project.manager.UserManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -17,13 +18,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("UserServiceTest")
 class UserServiceTest extends BaseTest {
 
+    private static final Long ADMIN_ROLE_ID = -200L;
     private static final String EMIRATES_ID = "ABCDEFT12345";
     private static final String FIRST_NAME = "Muhammad Faisal";
     private static final String LAST_NAME = "Hyder";
     private static final String STAFF_ID = "SE_007";
     private static final String PASSWORD = "12345ABCDEF";
+    private static final String EMAIL = "abc@def.com";
 
     private static EmployeeDTO employee;
+    private static RoleDTO role;
     private UserManager userManager;
 
     @Autowired
@@ -37,13 +41,17 @@ class UserServiceTest extends BaseTest {
      */
     @BeforeAll
     void beforeAll() {
-        employee = new EmployeeDTO();
+        role = new RoleDTO();
+        role.setID(ADMIN_ROLE_ID);
 
+        employee = new EmployeeDTO();
         employee.setEmiratesID(EMIRATES_ID + "001");
         employee.setFirstName(FIRST_NAME);
         employee.setLastName(LAST_NAME);
+        employee.setEmail(EMAIL);
         employee.setStaffID(STAFF_ID + "_001");
         employee.setPassword(PASSWORD);
+        employee.setRole(role);
     }
 
     @Test
@@ -52,6 +60,14 @@ class UserServiceTest extends BaseTest {
 
         assertNotNull(employees);
         assertTrue(employees.size() > 1);
+        for (EmployeeDTO tempEmployee : employees) {
+            assertNotNull(tempEmployee.getID());
+            assertNotNull(tempEmployee.getCreatedDate());
+            assertNotNull(tempEmployee.getCreatedBy());
+            assertNotNull(tempEmployee.getRole());
+            assertNotNull(tempEmployee.getRole().getID());
+            assertNotNull(tempEmployee.getRole().getName());
+        }
 
     }
 
@@ -87,8 +103,15 @@ class UserServiceTest extends BaseTest {
 
         assertAll("Registered employee should not be null",
                 () -> assertNotNull(registeredEmployee),
+                () -> assertNotNull(registeredEmployee.getID()),
                 () -> assertNotNull(registeredEmployee.getCreatedBy()),
-                () -> assertNotNull(registeredEmployee.getCreatedDate())
+                () -> assertNotNull(registeredEmployee.getCreatedDate()),
+                () -> assertNotNull(registeredEmployee.getRole()),
+                () -> assertNotNull(registeredEmployee.getRole().getID()),
+                () -> assertNotNull(registeredEmployee.getRole().getCreatedBy()),
+                () -> assertNotNull(registeredEmployee.getRole().getCreatedDate()),
+                () -> assertEquals(ADMIN_ROLE_ID, registeredEmployee.getRole().getID())
+
         );
 
     }
