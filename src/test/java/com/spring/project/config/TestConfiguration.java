@@ -2,7 +2,6 @@ package com.spring.project.config;
 
 import com.spring.project.manager.HomePageManager;
 import com.spring.project.service.HomePageService;
-import com.spring.project.utility.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -12,8 +11,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.util.Objects;
@@ -26,9 +23,9 @@ import java.util.Properties;
 @Configuration
 @EnableJpaRepositories(basePackages = {"com.spring.project"})
 @ComponentScan(basePackages = {"com.spring.project"})
-@Sql(value = {"classpath:import.sql"})
+//@Sql(value = {"classpath:import.sql"}) //This is not required as auto lookup picks up 'import.sql'
 @PropertySource(value = {"classpath:spring-wmt.properties"})
-@Import({PasswordUtil.class, BCryptPasswordEncoder.class})
+//@Import({PasswordUtil.class, BCryptPasswordEncoder.class}) //This is not required now, since we added Beans explicitly
 public class TestConfiguration {
 
     private final Environment environment;

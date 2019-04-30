@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @AutoConfigureMockMvc(secure = false) // Secure false is required to by pass security for Test Cases
 @ContextConfiguration //This is also not mandatory just to remove annoying warning, i added it
 //@Sql({"classpath:import.sql"}) //Not needed in Spring boot, if added then Integrity error will arise
-@Import({PasswordUtil.class, BCryptPasswordEncoder.class})
+//@Import({PasswordUtil.class, BCryptPasswordEncoder.class}) Not required as we declared Beans explicitly
 public abstract class BaseTest_SBT {
 
 }
