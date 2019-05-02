@@ -1,5 +1,6 @@
 package com.spring.project.service;
 
+import com.spring.project.Application;
 import com.spring.project.config.PropertiesConfig;
 import com.spring.project.constant.ApplicationConstants;
 import com.spring.project.constant.ApplicationProperties;
@@ -61,7 +62,7 @@ public class UserService implements UserManager {
 
         userServiceLogger.info("UserService.greetUser() :: method call ---- ENDS");
 
-        return "Welcome, " + name;
+        return ApplicationConstants.GeneralConstants.WELCOME.getValue() + name;
     }
 
     @Override
@@ -101,7 +102,7 @@ public class UserService implements UserManager {
     }
 
     @Override
-    public EmployeeDTO findByEmiratesIDNumber(String emiratesID) throws UserNotFoundException {
+    public EmployeeDTO findUserByEmiratesID(String emiratesID) throws UserNotFoundException {
         userServiceLogger.info("UserService.findByEmiratesID() :: method call ---- STARTS");
 
         Employee userFoundFromDB;
@@ -126,13 +127,19 @@ public class UserService implements UserManager {
             return employee;
 
         } catch (Exception exception) {
-            userServiceLogger.error("UserService.findByEmiratesIDNumber() ::  Some error occurred while finding user ---- FAILED");
+            userServiceLogger.error("UserService.findUserByEmiratesID() ::  Some error occurred while finding user ---- FAILED");
 
             throw new UserNotFoundException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_FIND_USER.getValue()), exception.getMessage());
 
         }
     }
 
+    /**
+     * Finds all users
+     *
+     * @return LinkedHashMap<String   ,       Object> -> "usersList", List<EmployeeDTO>
+     * @throws UserNotFoundException is thrown if any interruption is occurred
+     */
     @Override
     public LinkedHashMap<String, Object> findAllUsers() throws UserNotFoundException {
         userServiceLogger.info("UserService.findAllUsers() :: method call ---- STARTS");
@@ -189,6 +196,7 @@ public class UserService implements UserManager {
      * @return EmployeeDTO
      * @throws UserNotRegisteredException is thrown if any interruption is occurred
      */
+    @Override
     public EmployeeDTO registerUser(EmployeeDTO employee) throws UserNotRegisteredException {
         userServiceLogger.info("UserService.registerUser() :: method call ---- STARTS");
 
@@ -242,6 +250,7 @@ public class UserService implements UserManager {
      * @return EmployeeDTO
      * @throws UserNotFoundException is thrown if any interruption is occurred
      */
+    @Override
     public EmployeeDTO loginUser(Employee employee) throws UserNotFoundException {
         userServiceLogger.info("UserService.loginUser() :: method call ---- STARTS");
 
@@ -250,6 +259,121 @@ public class UserService implements UserManager {
         userServiceLogger.info("UserService.loginUser() :: method call ---- ENDS");
 
         return employeeDTO;
+    }
+
+    /**
+     * Finds users with given last name
+     *
+     * @param lastName "last name of user"
+     * @return List<EmployeeDTO>
+     * @throws UserNotFoundException is thrown if any interruption is occurred
+     */
+    @Override
+    public List<EmployeeDTO> findUserByLastName(String lastName) throws UserNotFoundException {
+        userServiceLogger.info("UserService.findUserByLastName() :: method call ---- STARTS");
+
+        List<EmployeeDTO> usersWithGivenLastName;
+        List<Employee> usersFoundFromDB;
+
+        try {
+            usersFoundFromDB = userRepository.findByLastName(lastName);
+
+            if (usersFoundFromDB == null || usersFoundFromDB.size() == 0) {
+                userServiceLogger.debug("UserService.findUserByLastName() :: No user found with given last name = {}", lastName);
+
+                return null;
+            }
+
+            usersWithGivenLastName = new ArrayList<>();
+
+            for (Employee tempUser : usersFoundFromDB) {
+                EmployeeDTO user = modelMapper.map(tempUser, EmployeeDTO.class);
+
+                usersWithGivenLastName.add(user);
+            }
+
+        } catch (Exception exception) {
+            userServiceLogger.error("UserService.findUserByLastName() :: method call ---- FAILED");
+
+            throw new UserNotFoundException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_FIND_USER.getValue()), exception.getMessage());
+
+        }
+
+        userServiceLogger.info("UserService.findUserByLastName() :: method call ---- ENDS");
+
+        return usersWithGivenLastName;
+    }
+
+    /**
+     * Finds user given their StaffID
+     *
+     * @param staffID "EMP_102"
+     * @return EmployeeDTO
+     * @throws UserNotFoundException is thrown if any interruption is occurred
+     */
+    @Override
+    public EmployeeDTO findUserByStaffID(String staffID) throws UserNotFoundException {
+        userServiceLogger.info("UserService.findUserByStaffID() :: method call ---- STARTS");
+
+        EmployeeDTO employee;
+        Employee userFoundFromDB;
+
+        try {
+            userFoundFromDB = userRepository.findByStaffID(staffID);
+
+            if (userFoundFromDB == null) {
+                userServiceLogger.debug("UserService.findUserByStaffID() :: No user found with given staff ID = {}", staffID);
+
+                return null;
+            }
+
+            employee = modelMapper.map(userFoundFromDB, EmployeeDTO.class);
+
+        } catch (Exception exception) {
+            userServiceLogger.info("UserService.findUserByStaffID() :: method call ---- FAILED");
+
+            throw new UserNotFoundException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_FIND_USER.getValue()), exception.getMessage());
+        }
+
+        userServiceLogger.info("UserService.findUserByStaffID() :: method call ---- ENDS");
+
+        return employee;
+    }
+
+    /**
+     * Finds user given their email address
+     *
+     * @param email "abc@gmail.com"
+     * @return EmployeeDTO
+     * @throws UserNotFoundException is thrown if any interruption is occurred
+     */
+    @Override
+    public EmployeeDTO findUserByEmail(String email) throws UserNotFoundException {
+        userServiceLogger.info("UserService.findUserByEmail() :: method call ---- STARTS");
+
+        EmployeeDTO employee;
+        Employee userFoundFromDB;
+
+        try {
+            userFoundFromDB = userRepository.findByEmail(email);
+
+            if (userFoundFromDB == null) {
+                userServiceLogger.debug("UserService.findUserByEmail() :: No user found with given email = {}", email);
+
+                return null;
+            }
+
+            employee = modelMapper.map(userFoundFromDB, EmployeeDTO.class);
+
+        } catch (Exception exception) {
+            userServiceLogger.info("UserService.findUserByEmail() :: method call ---- FAILED");
+
+            throw new UserNotFoundException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_FIND_USER.getValue()), exception.getMessage());
+        }
+
+        userServiceLogger.info("UserService.findUserByEmail() :: method call ---- ENDS");
+
+        return employee;
     }
 
     private EmployeeDTO copyEmployeePropertiesFromEntityToDTO(Employee employeeEntity) {

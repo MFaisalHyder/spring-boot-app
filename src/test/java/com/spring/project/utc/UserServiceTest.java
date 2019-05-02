@@ -4,6 +4,7 @@ import com.spring.project.config.BaseTest;
 import com.spring.project.constant.ApplicationConstants;
 import com.spring.project.dto.EmployeeDTO;
 import com.spring.project.dto.RoleDTO;
+import com.spring.project.entity.Employee;
 import com.spring.project.manager.UserManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -52,6 +53,16 @@ class UserServiceTest extends BaseTest {
         employee.setStaffID(STAFF_ID + "_001");
         employee.setPassword(PASSWORD);
         employee.setRole(role);
+
+    }
+
+    @Test
+    void greetUserTest() {
+        String greetingMessage = userManager.greetUser(FIRST_NAME);
+
+        assertNotNull(greetingMessage);
+        assertEquals(ApplicationConstants.GeneralConstants.WELCOME.getValue() + FIRST_NAME, greetingMessage);
+
     }
 
     @Test
@@ -72,8 +83,8 @@ class UserServiceTest extends BaseTest {
     }
 
     @Test
-    void findByEmiratesIDNumberTest() throws Exception {
-        EmployeeDTO employee = userManager.findByEmiratesIDNumber(EMIRATES_ID);
+    void findByEmiratesIDTest() throws Exception {
+        EmployeeDTO employee = userManager.findUserByEmiratesID(EMIRATES_ID);
 
         assertNotNull(employee);
         assertNotNull(employee.getCreatedDate());
@@ -113,6 +124,38 @@ class UserServiceTest extends BaseTest {
                 () -> assertEquals(ADMIN_ROLE_ID, registeredEmployee.getRole().getID())
 
         );
+
+    }
+
+    @Test
+    void findUserByLastNameTest() throws Exception {
+        List<EmployeeDTO> employees = userManager.findUserByLastName(LAST_NAME);
+
+        assertNotNull(employees);
+
+    }
+
+    @Test
+    void findUserByStaffIDTest() {
+        String STAFF_ID = "S779381";
+
+        EmployeeDTO employee = userManager.findUserByStaffID(STAFF_ID);
+
+        assertNotNull(employee);
+        assertEquals(STAFF_ID, employee.getStaffID());
+
+    }
+
+    @Test
+    void findUserByEmailTest() {
+        String EMAIL = "john.Smith@gmail.com";
+        String EMIRATES_ID = "BCDEFGT12345";
+
+        EmployeeDTO employee = userManager.findUserByEmail(EMAIL);
+
+        assertNotNull(employee);
+        assertEquals(EMAIL, employee.getEmail());
+        assertEquals(EMIRATES_ID, employee.getEmiratesID());
 
     }
 

@@ -9,10 +9,14 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<Employee, Long> {
 
+    Employee findByEmiratesID(String emiratesID);
+
     List<Employee> findByFirstName(String firstName);
 
     List<Employee> findByLastName(String lastName);
 
-    Employee findByEmiratesID(String emiratesID);
+    Employee findByStaffID(String staffID);
+
+    Employee findByEmail(String email);
 
 }
