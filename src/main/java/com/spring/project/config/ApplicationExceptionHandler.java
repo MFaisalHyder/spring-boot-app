@@ -81,4 +81,16 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(exceptionResponse, exceptionResponse.getHttpStatus());
     }
 
+    @ExceptionHandler(UnableToLoginException.class)
+    public ResponseEntity<Response> unableToLoginExceptionHandler(UnableToLoginException unableToLoginException) {
+        Response exceptionResponse = new Response.ResponseBuilder()
+                .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .setErrorCode(ApplicationConstants.ErrorCodes.LOGIN_FAILED.getValue())
+                .setMessage(unableToLoginException.getMessage())
+                .setDetails(unableToLoginException.getDetail())
+                .build();
+
+        return new ResponseEntity<>(exceptionResponse, exceptionResponse.getHttpStatus());
+    }
+
 }
