@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-abstract class BaseEntity implements Serializable {
+abstract class BaseEntity<U> implements Serializable {
 
     /**
      * For CreatedBy and ModifiedBy:
@@ -26,8 +26,8 @@ abstract class BaseEntity implements Serializable {
     private Long ID;
 
     @CreatedBy
-    @Column(name = "CreatedBy", nullable = false, updatable = false)
-    private String createdBy;
+    @Column(name = "CreatedBy")
+    private U createdBy;
 
     @CreatedDate
     @Column(name = "CreatedDate", nullable = false, updatable = false)
@@ -35,7 +35,7 @@ abstract class BaseEntity implements Serializable {
 
     @LastModifiedBy
     @Column(name = "ModifiedBy")
-    private String modifiedBy;
+    private U modifiedBy;
 
     @LastModifiedDate
     @Column(name = "ModifiedDate")
@@ -49,11 +49,11 @@ abstract class BaseEntity implements Serializable {
         this.ID = ID;
     }
 
-    public String getCreatedBy() {
+    public U getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(U createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -65,11 +65,11 @@ abstract class BaseEntity implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public String getModifiedBy() {
+    public U getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setModifiedBy(String modifiedBy) {
+    public void setModifiedBy(U modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 

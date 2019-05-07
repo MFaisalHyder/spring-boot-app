@@ -1,11 +1,13 @@
 package com.spring.project.entity;
 
+import com.spring.project.service.CurrentUserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
-@Table(name = "EMPLOYEE")
-public class Employee extends BaseEntity {
+@Table(name = "USER")
+public class User extends BaseEntity<String> {
 
     @Column(name = "EmiratesID", unique = true, nullable = false, updatable = false)
     private String emiratesID;
@@ -83,6 +85,11 @@ public class Employee extends BaseEntity {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public UserDetails currentUserDetails() {
+
+        return CurrentUserDetails.create(this);
     }
 
 }
