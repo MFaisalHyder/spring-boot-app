@@ -1,22 +1,22 @@
 package com.spring.project.repository;
 
-import com.spring.project.entity.Employee;
+import com.spring.project.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<Employee, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    Employee findByEmiratesID(String emiratesID);
+    User findByEmiratesID(String emiratesID);
 
-    List<Employee> findByFirstName(String firstName);
+    List<User> findByFirstName(String firstName);
 
-    List<Employee> findByLastName(String lastName);
+    List<User> findByLastName(String lastName);
 
-    Employee findByStaffID(String staffID);
+    User findByStaffID(String staffID);
 
-    Employee findByEmail(String email);
+    User findByEmail(String email);
 
 }

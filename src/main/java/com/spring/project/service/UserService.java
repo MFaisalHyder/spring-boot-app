@@ -1,13 +1,13 @@
 package com.spring.project.service;
 
-import com.spring.project.Application;
 import com.spring.project.config.PropertiesConfig;
 import com.spring.project.constant.ApplicationConstants;
 import com.spring.project.constant.ApplicationProperties;
-import com.spring.project.dto.EmployeeDTO;
+import com.spring.project.dto.LoginDTO;
 import com.spring.project.dto.RoleDTO;
-import com.spring.project.entity.Employee;
+import com.spring.project.dto.UserDTO;
 import com.spring.project.entity.Role;
+import com.spring.project.entity.User;
 import com.spring.project.exception.InvalidInputException;
 import com.spring.project.exception.UserNotFoundException;
 import com.spring.project.exception.UserNotRegisteredException;
@@ -15,7 +15,6 @@ import com.spring.project.manager.UserManager;
 import com.spring.project.repository.RoleRepository;
 import com.spring.project.repository.UserRepository;
 import com.spring.project.utility.PasswordUtil;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -66,12 +65,12 @@ public class UserService implements UserManager {
     }
 
     @Override
-    public List<EmployeeDTO> findUserByFirstName(String firstName) throws UserNotFoundException {
+    public List<UserDTO> findUserByFirstName(String firstName) throws UserNotFoundException {
         userServiceLogger.info("UserService.findUserByFirstName() :: method call ---- STARTS");
 
-        List<Employee> usersFoundFromDB;
-        EmployeeDTO employee;
-        List<EmployeeDTO> employees;
+        List<User> usersFoundFromDB;
+        UserDTO user;
+        List<UserDTO> users;
 
         try {
             usersFoundFromDB = userRepository.findByFirstName(firstName);
@@ -82,17 +81,17 @@ public class UserService implements UserManager {
                 return null;
             }
 
-            employees = new ArrayList<>();
+            users = new ArrayList<>();
 
-            for (Employee tempEmployee : usersFoundFromDB) {
-                employee = modelMapper.map(tempEmployee, EmployeeDTO.class);
+            for (User tempUser : usersFoundFromDB) {
+                user = modelMapper.map(tempUser, UserDTO.class);
 
-                employees.add(employee);
+                users.add(user);
             }
 
             userServiceLogger.info("UserService.findUserByFirstName() :: method call ---- ENDS");
 
-            return employees;
+            return users;
 
         } catch (Exception exception) {
             userServiceLogger.error("UserService.findUserByFirstName() ::  Some error occurred while finding user ---- FAILED");
@@ -102,11 +101,11 @@ public class UserService implements UserManager {
     }
 
     @Override
-    public EmployeeDTO findUserByEmiratesID(String emiratesID) throws UserNotFoundException {
+    public UserDTO findUserByEmiratesID(String emiratesID) throws UserNotFoundException {
         userServiceLogger.info("UserService.findByEmiratesID() :: method call ---- STARTS");
 
-        Employee userFoundFromDB;
-        EmployeeDTO employee;
+        User userFoundFromDB;
+        UserDTO user;
 
         try {
             userFoundFromDB = userRepository.findByEmiratesID(emiratesID);
@@ -118,13 +117,13 @@ public class UserService implements UserManager {
             }
 
             /*
-            employee = copyEmployeePropertiesFromEntityToDTO(userFoundFromDB);
+            user = copyUserPropertiesFromEntityToDTO(userFoundFromDB);
             */
-            employee = modelMapper.map(userFoundFromDB, EmployeeDTO.class);
+            user = modelMapper.map(userFoundFromDB, UserDTO.class);
 
             userServiceLogger.info("UserService.findByEmiratesID() :: method call ---- ENDS");
 
-            return employee;
+            return user;
 
         } catch (Exception exception) {
             userServiceLogger.error("UserService.findUserByEmiratesID() ::  Some error occurred while finding user ---- FAILED");
@@ -137,7 +136,7 @@ public class UserService implements UserManager {
     /**
      * Finds all users
      *
-     * @return LinkedHashMap<String   ,       Object> -> "usersList", List<EmployeeDTO>
+     * @return LinkedHashMap<String               ,                               Object> -> "usersList", List<EmployeeDTO>
      * @throws UserNotFoundException is thrown if any interruption is occurred
      */
     @Override
@@ -145,9 +144,9 @@ public class UserService implements UserManager {
         userServiceLogger.info("UserService.findAllUsers() :: method call ---- STARTS");
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-        List<Employee> allUsersInDB;
-        EmployeeDTO employee;
-        List<EmployeeDTO> allEmployees;
+        List<User> allUsersInDB;
+        UserDTO user;
+        List<UserDTO> allUsers;
         String status;
 
         try {
@@ -165,17 +164,18 @@ public class UserService implements UserManager {
 
             }
 
-            allEmployees = new ArrayList<>();
+            allUsers = new ArrayList<>();
 
-            for (Employee tempEmployee : allUsersInDB) {
-                employee = copyEmployeePropertiesFromEntityToDTO(tempEmployee);
+            for (User tempUser : allUsersInDB) {
+                //user = copyUserPropertiesFromEntityToDTO(tempUser);
+                user = modelMapper.map(tempUser, UserDTO.class);
 
-                allEmployees.add(employee);
+                allUsers.add(user);
 
             }
 
             result.put("status", status);
-            result.put("usersList", allEmployees);
+            result.put("usersList", allUsers);
 
             userServiceLogger.info("UserService.findAllUsers() :: method call ---- ENDS");
 
@@ -190,26 +190,26 @@ public class UserService implements UserManager {
     }
 
     /**
-     * Service method to add/register an employee in DB
+     * Service method to add/register an user in DB
      *
-     * @param employee Employee Object
-     * @return EmployeeDTO
+     * @param user UserDTO Object
+     * @return UserDTO
      * @throws UserNotRegisteredException is thrown if any interruption is occurred
      */
     @Override
-    public EmployeeDTO registerUser(EmployeeDTO employee) throws UserNotRegisteredException {
+    public UserDTO registerUser(UserDTO user) throws UserNotRegisteredException {
         userServiceLogger.info("UserService.registerUser() :: method call ---- STARTS");
 
-        Employee employeeToBeRegistered = new Employee();
+        User userToBeRegistered;
         Role role;
 
         try {
             /*
-            BeanUtils.copyProperties(employee, employeeToBeRegistered, "role");
+            BeanUtils.copyProperties(user, userToBeRegistered, "role");
             */
-            employeeToBeRegistered = modelMapper.map(employee, Employee.class);
+            userToBeRegistered = modelMapper.map(user, User.class);
 
-            role = roleRepository.findById(employee.getRole().getID()).orElse(null);
+            role = roleRepository.findById(user.getRole().getID()).orElse(null);
 
             if (role == null) {
                 throw new UserNotRegisteredException(propertiesConfig.getProperty(ApplicationProperties.Messages.UNABLE_TO_REGISTER_USER.getValue()),
@@ -217,23 +217,23 @@ public class UserService implements UserManager {
 
             }
 
-            employeeToBeRegistered.setPassword(passwordUtil.encryptPassword(employee.getPassword()));
-            employeeToBeRegistered.setRole(role);
+            userToBeRegistered.setPassword(passwordUtil.encryptPassword(user.getPassword()));
+            userToBeRegistered.setRole(role);
 
-            employeeToBeRegistered = userRepository.save(employeeToBeRegistered);
+            userToBeRegistered = userRepository.save(userToBeRegistered);
 
             /*
-            BeanUtils.copyProperties(employeeToBeRegistered, employee, "role");
+            BeanUtils.copyProperties(userToBeRegistered, user, "role");
             employee.setRole(copyRolePropertiesFromEntityToDTO(role));
-            employee.setCreatedDate(employeeToBeRegistered.getCreatedDate() != null ? employeeToBeRegistered.getCreatedDate().toString() : null);
-            employee.setModifiedDate(employeeToBeRegistered.getModifiedDate() != null ? employeeToBeRegistered.getModifiedDate().toString() : null);
+            employee.setCreatedDate(userToBeRegistered.getCreatedDate() != null ? userToBeRegistered.getCreatedDate().toString() : null);
+            employee.setModifiedDate(userToBeRegistered.getModifiedDate() != null ? userToBeRegistered.getModifiedDate().toString() : null);
             */
 
-            employee = modelMapper.map(employeeToBeRegistered, EmployeeDTO.class);
+            user = modelMapper.map(userToBeRegistered, UserDTO.class);
 
             userServiceLogger.info("UserService.registerUser() :: method call ---- ENDS");
 
-            return employee;
+            return user;
 
         } catch (Exception exception) {
             userServiceLogger.error("UserService.registerUser() :: method call ---- FAILED");
@@ -246,34 +246,48 @@ public class UserService implements UserManager {
     /**
      * Service method to login user
      *
-     * @param employee Employee Object
-     * @return EmployeeDTO
+     * @param user UserDTO Object
+     * @return UserDTO
      * @throws UserNotFoundException is thrown if any interruption is occurred
      */
     @Override
-    public EmployeeDTO loginUser(Employee employee) throws UserNotFoundException {
+    public LoginDTO loginUser(UserDTO user) throws UserNotFoundException {
         userServiceLogger.info("UserService.loginUser() :: method call ---- STARTS");
 
-        EmployeeDTO employeeDTO = new EmployeeDTO();
+        LoginDTO loginResponse = new LoginDTO();
+
+        try {
+            userRepository.findByEmail(user.getEmail());
+
+            /*
+            Authentication request = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+            Authentication result = authenticationManager.authenticate(request);
+
+            SecurityContextHolder.getContext().setAuthentication(result);
+            */
+
+        } catch (Exception exception) {
+
+        }
 
         userServiceLogger.info("UserService.loginUser() :: method call ---- ENDS");
 
-        return employeeDTO;
+        return loginResponse;
     }
 
     /**
      * Finds users with given last name
      *
      * @param lastName "last name of user"
-     * @return List<EmployeeDTO>
+     * @return List<UserDTO>
      * @throws UserNotFoundException is thrown if any interruption is occurred
      */
     @Override
-    public List<EmployeeDTO> findUserByLastName(String lastName) throws UserNotFoundException {
+    public List<UserDTO> findUserByLastName(String lastName) throws UserNotFoundException {
         userServiceLogger.info("UserService.findUserByLastName() :: method call ---- STARTS");
 
-        List<EmployeeDTO> usersWithGivenLastName;
-        List<Employee> usersFoundFromDB;
+        List<User> usersFoundFromDB;
+        List<UserDTO> users;
 
         try {
             usersFoundFromDB = userRepository.findByLastName(lastName);
@@ -284,12 +298,12 @@ public class UserService implements UserManager {
                 return null;
             }
 
-            usersWithGivenLastName = new ArrayList<>();
+            users = new ArrayList<>();
 
-            for (Employee tempUser : usersFoundFromDB) {
-                EmployeeDTO user = modelMapper.map(tempUser, EmployeeDTO.class);
+            for (User tempUser : usersFoundFromDB) {
+                UserDTO user = modelMapper.map(tempUser, UserDTO.class);
 
-                usersWithGivenLastName.add(user);
+                users.add(user);
             }
 
         } catch (Exception exception) {
@@ -301,22 +315,22 @@ public class UserService implements UserManager {
 
         userServiceLogger.info("UserService.findUserByLastName() :: method call ---- ENDS");
 
-        return usersWithGivenLastName;
+        return users;
     }
 
     /**
      * Finds user given their StaffID
      *
      * @param staffID "EMP_102"
-     * @return EmployeeDTO
+     * @return UserDTO
      * @throws UserNotFoundException is thrown if any interruption is occurred
      */
     @Override
-    public EmployeeDTO findUserByStaffID(String staffID) throws UserNotFoundException {
+    public UserDTO findUserByStaffID(String staffID) throws UserNotFoundException {
         userServiceLogger.info("UserService.findUserByStaffID() :: method call ---- STARTS");
 
-        EmployeeDTO employee;
-        Employee userFoundFromDB;
+        User userFoundFromDB;
+        UserDTO user;
 
         try {
             userFoundFromDB = userRepository.findByStaffID(staffID);
@@ -327,7 +341,7 @@ public class UserService implements UserManager {
                 return null;
             }
 
-            employee = modelMapper.map(userFoundFromDB, EmployeeDTO.class);
+            user = modelMapper.map(userFoundFromDB, UserDTO.class);
 
         } catch (Exception exception) {
             userServiceLogger.info("UserService.findUserByStaffID() :: method call ---- FAILED");
@@ -337,22 +351,22 @@ public class UserService implements UserManager {
 
         userServiceLogger.info("UserService.findUserByStaffID() :: method call ---- ENDS");
 
-        return employee;
+        return user;
     }
 
     /**
      * Finds user given their email address
      *
      * @param email "abc@gmail.com"
-     * @return EmployeeDTO
+     * @return UserDTO
      * @throws UserNotFoundException is thrown if any interruption is occurred
      */
     @Override
-    public EmployeeDTO findUserByEmail(String email) throws UserNotFoundException {
+    public UserDTO findUserByEmail(String email) throws UserNotFoundException {
         userServiceLogger.info("UserService.findUserByEmail() :: method call ---- STARTS");
 
-        EmployeeDTO employee;
-        Employee userFoundFromDB;
+        User userFoundFromDB;
+        UserDTO user;
 
         try {
             userFoundFromDB = userRepository.findByEmail(email);
@@ -363,7 +377,7 @@ public class UserService implements UserManager {
                 return null;
             }
 
-            employee = modelMapper.map(userFoundFromDB, EmployeeDTO.class);
+            user = modelMapper.map(userFoundFromDB, UserDTO.class);
 
         } catch (Exception exception) {
             userServiceLogger.info("UserService.findUserByEmail() :: method call ---- FAILED");
@@ -373,20 +387,20 @@ public class UserService implements UserManager {
 
         userServiceLogger.info("UserService.findUserByEmail() :: method call ---- ENDS");
 
-        return employee;
+        return user;
     }
 
-    private EmployeeDTO copyEmployeePropertiesFromEntityToDTO(Employee employeeEntity) {
-        EmployeeDTO employeeDTO = new EmployeeDTO();
+    private UserDTO copyUserPropertiesFromEntityToDTO(User userEntity) {
+        UserDTO userDTO = new UserDTO();
 
-        if (employeeEntity != null) {
-            BeanUtils.copyProperties(employeeEntity, employeeDTO);
-            employeeDTO.setRole(copyRolePropertiesFromEntityToDTO(employeeEntity.getRole()));
-            employeeDTO.setCreatedDate(employeeEntity.getCreatedDate() != null ? employeeEntity.getCreatedDate().toString() : null);
-            employeeDTO.setModifiedDate(employeeEntity.getModifiedDate() != null ? employeeEntity.getModifiedDate().toString() : null);
+        if (userEntity != null) {
+            BeanUtils.copyProperties(userEntity, userDTO);
+            userDTO.setRole(copyRolePropertiesFromEntityToDTO(userEntity.getRole()));
+            userDTO.setCreatedDate(userEntity.getCreatedDate() != null ? userEntity.getCreatedDate().toString() : null);
+            userDTO.setModifiedDate(userEntity.getModifiedDate() != null ? userEntity.getModifiedDate().toString() : null);
         }
 
-        return employeeDTO;
+        return userDTO;
 
     }
 
@@ -396,9 +410,9 @@ public class UserService implements UserManager {
         if (roleEntity != null) {
             roleDTO.setID(roleEntity.getID());
             roleDTO.setCreatedDate(!StringUtils.isEmpty(roleEntity.getCreatedDate()) ? roleEntity.getCreatedDate().toString() : null);
-            roleDTO.setCreatedBy(roleEntity.getCreatedBy());
+            roleDTO.setCreatedBy(!StringUtils.isEmpty(roleEntity.getCreatedBy()) ? roleEntity.getCreatedBy() : null);
             roleDTO.setModifiedDate(!StringUtils.isEmpty(roleEntity.getModifiedDate()) ? roleEntity.getModifiedDate().toString() : null);
-            roleDTO.setModifiedBy(roleEntity.getModifiedBy());
+            roleDTO.setModifiedBy(!StringUtils.isEmpty(roleEntity.getModifiedBy()) ? roleEntity.getModifiedBy() : null);
             roleDTO.setName(roleEntity.getName());
 
         }

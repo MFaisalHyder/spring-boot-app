@@ -1,9 +1,11 @@
 package com.spring.project.manager;
 
-import com.spring.project.dto.EmployeeDTO;
-import com.spring.project.entity.Employee;
+import com.spring.project.dto.LoginDTO;
+import com.spring.project.dto.UserDTO;
+import com.spring.project.exception.UnableToLoginException;
 import com.spring.project.exception.UserNotFoundException;
 import com.spring.project.exception.UserNotRegisteredException;
+import org.springframework.jmx.export.UnableToRegisterMBeanException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,20 +14,20 @@ public interface UserManager {
 
     String greetUser(String name);
 
-    List<EmployeeDTO> findUserByFirstName(String firstName) throws UserNotFoundException;
+    List<UserDTO> findUserByFirstName(String firstName) throws UserNotFoundException;
 
-    EmployeeDTO findUserByEmiratesID(String emiratesIDNumber) throws UserNotFoundException;
+    UserDTO findUserByEmiratesID(String emiratesIDNumber) throws UserNotFoundException;
 
     LinkedHashMap<String, Object> findAllUsers() throws UserNotFoundException;
 
-    EmployeeDTO registerUser(EmployeeDTO employee) throws UserNotRegisteredException;
+    UserDTO registerUser(UserDTO employee) throws UserNotRegisteredException;
 
-    EmployeeDTO loginUser(Employee employee) throws UserNotFoundException;
+    LoginDTO loginUser(UserDTO user) throws UserNotFoundException, UnableToLoginException;
 
-    List<EmployeeDTO> findUserByLastName(String lastName) throws UserNotFoundException;
+    List<UserDTO> findUserByLastName(String lastName) throws UserNotFoundException;
 
-    EmployeeDTO findUserByStaffID(String staffID) throws UserNotFoundException;
+    UserDTO findUserByStaffID(String staffID) throws UserNotFoundException;
 
-    EmployeeDTO findUserByEmail(String email) throws UserNotFoundException;
+    UserDTO findUserByEmail(String email) throws UserNotFoundException;
 
 }

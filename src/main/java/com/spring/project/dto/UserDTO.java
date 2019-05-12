@@ -1,8 +1,6 @@
 package com.spring.project.dto;
 
-import java.io.Serializable;
-
-public class EmployeeDTO extends BaseDTO {
+public class UserDTO extends BaseDTO {
 
     private String emiratesID;
     private String firstName;
