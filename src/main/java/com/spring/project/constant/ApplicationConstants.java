@@ -11,7 +11,9 @@ public class ApplicationConstants {
         FAILED("Failed"),
         ZERO_RECORDS("No records found"),
         EMPTY_STRING(""),
-        MISSING_PARAMETER("Required parameter is missing");
+        MISSING_PARAMETER("Required parameter is missing"),
+        WELCOME("Welcome, "),
+        GUEST("GUEST");
 
         private String value;
 
@@ -25,7 +27,7 @@ public class ApplicationConstants {
     }
 
     public enum HomePageConstants {
-        USER_NAME_NOT_FOUND("Employee name not found");
+        USER_NAME_NOT_FOUND("User name not found");
 
         private String value;
 
@@ -43,7 +45,8 @@ public class ApplicationConstants {
         ZERO_RECORD("ZERO_RECORD"),
         GENERAL_ERROR("500-GENERAL_ERROR"),
         INVALID_PARAMETER("INVALID_PARAMETER"),
-        USER_NOT_REGISTERED("USER_NOT_REGISTERED");
+        USER_NOT_REGISTERED("USER_NOT_REGISTERED"),
+        LOGIN_FAILED("LOGIN_FAILED");
 
         private String value;
 
