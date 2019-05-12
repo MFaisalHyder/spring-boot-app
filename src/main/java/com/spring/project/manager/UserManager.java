@@ -5,7 +5,6 @@ import com.spring.project.dto.UserDTO;
 import com.spring.project.exception.UnableToLoginException;
 import com.spring.project.exception.UserNotFoundException;
 import com.spring.project.exception.UserNotRegisteredException;
-import org.springframework.jmx.export.UnableToRegisterMBeanException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
