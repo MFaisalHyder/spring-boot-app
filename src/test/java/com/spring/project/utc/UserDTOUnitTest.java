@@ -2,9 +2,9 @@ package com.spring.project.utc;
 
 import com.spring.project.config.TestConstants;
 import com.spring.project.constant.ApplicationConstants;
-import com.spring.project.dto.EmployeeDTO;
+import com.spring.project.dto.UserDTO;
 import com.spring.project.dto.RoleDTO;
-import com.spring.project.entity.Employee;
+import com.spring.project.entity.User;
 import com.spring.project.entity.Role;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class EmployeeDTOUnitTest {
+class UserDTOUnitTest {
 
     private static ModelMapper modelMapper;
-    private static Employee employee;
+    private static User user;
     private static Role role;
-    private static EmployeeDTO employeeDTO;
+    private static UserDTO userDTO;
     private static RoleDTO roleDTO;
 
     @BeforeAll
@@ -59,19 +59,19 @@ class EmployeeDTOUnitTest {
         role.setModifiedDate(TestConstants.TIME);
         role.setName(TestConstants.ROLE_ADMIN);
 
-        employee = new Employee();
-        employee.setID(-1000L);
-        employee.setCreatedBy(TestConstants.FIRST_NAME);
-        employee.setCreatedDate(TestConstants.TIME);
-        employee.setModifiedBy(TestConstants.FIRST_NAME);
-        employee.setModifiedDate(TestConstants.TIME);
-        employee.setEmiratesID(TestConstants.EMIRATES_ID + "001");
-        employee.setFirstName(TestConstants.FIRST_NAME);
-        employee.setLastName(TestConstants.LAST_NAME);
-        employee.setEmail(TestConstants.EMAIL);
-        employee.setStaffID(TestConstants.STAFF_ID + "_001");
-        employee.setPassword(TestConstants.PASSWORD);
-        employee.setRole(role);
+        user = new User();
+        user.setID(-1000L);
+        user.setCreatedBy(TestConstants.FIRST_NAME);
+        user.setCreatedDate(TestConstants.TIME);
+        user.setModifiedBy(TestConstants.FIRST_NAME);
+        user.setModifiedDate(TestConstants.TIME);
+        user.setEmiratesID(TestConstants.EMIRATES_ID + "001");
+        user.setFirstName(TestConstants.FIRST_NAME);
+        user.setLastName(TestConstants.LAST_NAME);
+        user.setEmail(TestConstants.EMAIL);
+        user.setStaffID(TestConstants.STAFF_ID + "_001");
+        user.setPassword(TestConstants.PASSWORD);
+        user.setRole(role);
     }
 
     @Test
@@ -80,14 +80,14 @@ class EmployeeDTOUnitTest {
 
         assertEquals(role.getID(), roleDTO.getID());
 
-        employeeDTO = modelMapper.map(employee, EmployeeDTO.class);
+        userDTO = modelMapper.map(user, UserDTO.class);
 
-        assertEquals(Long.valueOf(-1000L), employeeDTO.getID());
-        assertEquals(employee.getEmiratesID(), employeeDTO.getEmiratesID());
-        assertEquals(employee.getEmail(), employeeDTO.getEmail());
-        assertNotNull(employeeDTO.getCreatedDate());
-        assertNotNull(employeeDTO.getModifiedDate());
-        assertNotNull(employeeDTO.getRole().getName());
+        assertEquals(Long.valueOf(-1000L), userDTO.getID());
+        assertEquals(user.getEmiratesID(), userDTO.getEmiratesID());
+        assertEquals(user.getEmail(), userDTO.getEmail());
+        assertNotNull(userDTO.getCreatedDate());
+        assertNotNull(userDTO.getModifiedDate());
+        assertNotNull(userDTO.getRole().getName());
 
     }
 
@@ -101,34 +101,34 @@ class EmployeeDTOUnitTest {
         roleDTO.setModifiedDate(TestConstants.TIME.format(DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT)));
         roleDTO.setName(TestConstants.ROLE_ADMIN);
 
-        employeeDTO = new EmployeeDTO();
-        employeeDTO.setID(-5000L);
-        employeeDTO.setCreatedBy(TestConstants.FIRST_NAME);
-        employeeDTO.setCreatedDate(TestConstants.TIME.format(DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT)));
-        employeeDTO.setModifiedBy(TestConstants.FIRST_NAME);
-        employeeDTO.setModifiedDate(TestConstants.TIME.format(DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT)));
-        employeeDTO.setEmiratesID(TestConstants.EMIRATES_ID + "001");
-        employeeDTO.setFirstName(TestConstants.FIRST_NAME);
-        employeeDTO.setLastName(TestConstants.LAST_NAME);
-        employeeDTO.setEmail(TestConstants.EMAIL);
-        employeeDTO.setStaffID(TestConstants.STAFF_ID + "_001");
-        employeeDTO.setPassword(TestConstants.PASSWORD);
-        employeeDTO.setRole(roleDTO);
+        userDTO = new UserDTO();
+        userDTO.setID(-5000L);
+        userDTO.setCreatedBy(TestConstants.FIRST_NAME);
+        userDTO.setCreatedDate(TestConstants.TIME.format(DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT)));
+        userDTO.setModifiedBy(TestConstants.FIRST_NAME);
+        userDTO.setModifiedDate(TestConstants.TIME.format(DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT)));
+        userDTO.setEmiratesID(TestConstants.EMIRATES_ID + "001");
+        userDTO.setFirstName(TestConstants.FIRST_NAME);
+        userDTO.setLastName(TestConstants.LAST_NAME);
+        userDTO.setEmail(TestConstants.EMAIL);
+        userDTO.setStaffID(TestConstants.STAFF_ID + "_001");
+        userDTO.setPassword(TestConstants.PASSWORD);
+        userDTO.setRole(roleDTO);
 
         role = new Role();
         role = modelMapper.map(roleDTO, Role.class);
 
         assertEquals(roleDTO.getID(), role.getID());
 
-        employee = new Employee();
-        employee = modelMapper.map(employeeDTO, Employee.class);
+        user = new User();
+        user = modelMapper.map(userDTO, User.class);
 
-        assertEquals(Long.valueOf(-5000L), employee.getID());
-        assertEquals(employeeDTO.getEmiratesID(), employee.getEmiratesID());
-        assertEquals(employeeDTO.getEmail(), employee.getEmail());
-        assertNotNull(employee.getCreatedDate());
-        assertNotNull(employee.getModifiedDate());
-        assertNotNull(employee.getRole().getName());
+        assertEquals(Long.valueOf(-5000L), user.getID());
+        assertEquals(userDTO.getEmiratesID(), user.getEmiratesID());
+        assertEquals(userDTO.getEmail(), user.getEmail());
+        assertNotNull(user.getCreatedDate());
+        assertNotNull(user.getModifiedDate());
+        assertNotNull(user.getRole().getName());
 
     }
 

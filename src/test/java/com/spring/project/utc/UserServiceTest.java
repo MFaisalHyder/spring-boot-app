@@ -2,14 +2,15 @@ package com.spring.project.utc;
 
 import com.spring.project.config.BaseTest;
 import com.spring.project.constant.ApplicationConstants;
-import com.spring.project.dto.EmployeeDTO;
+import com.spring.project.dto.UserDTO;
 import com.spring.project.dto.RoleDTO;
-import com.spring.project.entity.Employee;
 import com.spring.project.manager.UserManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ class UserServiceTest extends BaseTest {
     private static final String PASSWORD = "12345ABCDEF";
     private static final String EMAIL = "abc@def.com";
 
-    private static EmployeeDTO employee;
+    private static UserDTO user;
     private static RoleDTO role;
     private UserManager userManager;
 
@@ -45,14 +46,14 @@ class UserServiceTest extends BaseTest {
         role = new RoleDTO();
         role.setID(ADMIN_ROLE_ID);
 
-        employee = new EmployeeDTO();
-        employee.setEmiratesID(EMIRATES_ID + "001");
-        employee.setFirstName(FIRST_NAME);
-        employee.setLastName(LAST_NAME);
-        employee.setEmail(EMAIL);
-        employee.setStaffID(STAFF_ID + "_001");
-        employee.setPassword(PASSWORD);
-        employee.setRole(role);
+        user = new UserDTO();
+        user.setEmiratesID(EMIRATES_ID + "001");
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setEmail(EMAIL);
+        user.setStaffID(STAFF_ID + "_001");
+        user.setPassword(PASSWORD);
+        user.setRole(role);
 
     }
 
@@ -66,12 +67,12 @@ class UserServiceTest extends BaseTest {
     }
 
     @Test
-    void findUserByFirstNameTest() throws Exception {
-        List<EmployeeDTO> employees = userManager.findUserByFirstName(FIRST_NAME);
+    void findUserByFirstNameTest() {
+        List<UserDTO> employees = userManager.findUserByFirstName(FIRST_NAME);
 
         assertNotNull(employees);
         assertTrue(employees.size() > 1);
-        for (EmployeeDTO tempEmployee : employees) {
+        for (UserDTO tempEmployee : employees) {
             assertNotNull(tempEmployee.getID());
             assertNotNull(tempEmployee.getCreatedDate());
             assertNotNull(tempEmployee.getCreatedBy());
@@ -84,7 +85,7 @@ class UserServiceTest extends BaseTest {
 
     @Test
     void findByEmiratesIDTest() throws Exception {
-        EmployeeDTO employee = userManager.findUserByEmiratesID(EMIRATES_ID);
+        UserDTO employee = userManager.findUserByEmiratesID(EMIRATES_ID);
 
         assertNotNull(employee);
         assertNotNull(employee.getCreatedDate());
@@ -103,25 +104,27 @@ class UserServiceTest extends BaseTest {
         assertEquals(result.get("status"), ApplicationConstants.GeneralConstants.SUCCESS.getValue());
         assertNotNull(result.get("usersList"));
 
-        List<EmployeeDTO> employees = (List) result.get("usersList");
+        List<UserDTO> employees = (List) result.get("usersList");
         assertNotNull(employees);
 
     }
 
     @Test
+    @WithUserDetails("faisal.hyder@gmail.com")
+        //required as Spring will look for a principal object for JPA Auditing
     void registerUserTest() throws Exception {
-        EmployeeDTO registeredEmployee = userManager.registerUser(employee);
+        UserDTO registeredUser = userManager.registerUser(user);
 
-        assertAll("Registered employee should not be null",
-                () -> assertNotNull(registeredEmployee),
-                () -> assertNotNull(registeredEmployee.getID()),
-                () -> assertNotNull(registeredEmployee.getCreatedBy()),
-                () -> assertNotNull(registeredEmployee.getCreatedDate()),
-                () -> assertNotNull(registeredEmployee.getRole()),
-                () -> assertNotNull(registeredEmployee.getRole().getID()),
-                () -> assertNotNull(registeredEmployee.getRole().getCreatedBy()),
-                () -> assertNotNull(registeredEmployee.getRole().getCreatedDate()),
-                () -> assertEquals(ADMIN_ROLE_ID, registeredEmployee.getRole().getID())
+        assertAll("Registered user should not be null",
+                () -> assertNotNull(registeredUser),
+                () -> assertNotNull(registeredUser.getID()),
+                () -> assertNotNull(registeredUser.getCreatedBy()),
+                () -> assertNotNull(registeredUser.getCreatedDate()),
+                () -> assertNotNull(registeredUser.getRole()),
+                () -> assertNotNull(registeredUser.getRole().getID()),
+                () -> assertNotNull(registeredUser.getRole().getCreatedBy()),
+                () -> assertNotNull(registeredUser.getRole().getCreatedDate()),
+                () -> assertEquals(ADMIN_ROLE_ID, registeredUser.getRole().getID())
 
         );
 
@@ -129,7 +132,7 @@ class UserServiceTest extends BaseTest {
 
     @Test
     void findUserByLastNameTest() throws Exception {
-        List<EmployeeDTO> employees = userManager.findUserByLastName(LAST_NAME);
+        List<UserDTO> employees = userManager.findUserByLastName(LAST_NAME);
 
         assertNotNull(employees);
 
@@ -139,10 +142,10 @@ class UserServiceTest extends BaseTest {
     void findUserByStaffIDTest() {
         String STAFF_ID = "S779381";
 
-        EmployeeDTO employee = userManager.findUserByStaffID(STAFF_ID);
+        UserDTO user = userManager.findUserByStaffID(STAFF_ID);
 
-        assertNotNull(employee);
-        assertEquals(STAFF_ID, employee.getStaffID());
+        assertNotNull(user);
+        assertEquals(STAFF_ID, user.getStaffID());
 
     }
 
@@ -151,11 +154,11 @@ class UserServiceTest extends BaseTest {
         String EMAIL = "john.Smith@gmail.com";
         String EMIRATES_ID = "BCDEFGT12345";
 
-        EmployeeDTO employee = userManager.findUserByEmail(EMAIL);
+        UserDTO user = userManager.findUserByEmail(EMAIL);
 
-        assertNotNull(employee);
-        assertEquals(EMAIL, employee.getEmail());
-        assertEquals(EMIRATES_ID, employee.getEmiratesID());
+        assertNotNull(user);
+        assertEquals(EMAIL, user.getEmail());
+        assertEquals(EMIRATES_ID, user.getEmiratesID());
 
     }
 
