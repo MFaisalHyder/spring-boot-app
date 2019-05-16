@@ -62,4 +62,22 @@ public class ApplicationConstants {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH-mm-ss";
 
+    public enum CSRF_HEADERS {
+        REQUEST_ATTRIBUTE_NAME("_csrf"),
+        RESPONSE_HEADER_NAME("X-CSRF-HEADER"),
+        RESPONSE_PARAM_NAME("X-CSRF-PARAM"),
+        RESPONSE_TOKEN_NAME("X-CSRF-TOKEN");
+
+        private String header;
+
+        CSRF_HEADERS(String headerValue) {
+            this.header = headerValue;
+        }
+
+        public String getValue() {
+            return header;
+        }
+
+    }
+
 }
