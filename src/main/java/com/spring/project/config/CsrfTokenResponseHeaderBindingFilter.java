@@ -1,5 +1,6 @@
 package com.spring.project.config;
 
+import com.spring.project.constant.ApplicationConstants;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,19 +15,15 @@ import java.io.IOException;
  * <p>This binding class adds -csrf token into response header, so client can access it<p/>
  */
 public class CsrfTokenResponseHeaderBindingFilter extends OncePerRequestFilter {
-    private static final String REQUEST_ATTRIBUTE_NAME = "_csrf";
-    private static final String RESPONSE_HEADER_NAME = "X-CSRF-HEADER";
-    private static final String RESPONSE_PARAM_NAME = "X-CSRF-PARAM";
-    private static final String RESPONSE_TOKEN_NAME = "X-CSRF-TOKEN";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, javax.servlet.FilterChain filterChain) throws ServletException, IOException {
-        CsrfToken token = (CsrfToken) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+        CsrfToken token = (CsrfToken) request.getAttribute(ApplicationConstants.CSRF_HEADERS.REQUEST_ATTRIBUTE_NAME.getValue());
 
         if (token != null) {
-            //response.setHeader(RESPONSE_HEADER_NAME, token.getHeaderName());
-            //response.setHeader(RESPONSE_PARAM_NAME, token.getParameterName());
-            response.setHeader(RESPONSE_TOKEN_NAME, token.getToken());
+            //response.setHeader(ApplicationConstants.CSRF_HEADERS.RESPONSE_HEADER_NAME.getValue(), token.getHeaderName());
+            //response.setHeader(ApplicationConstants.CSRF_HEADERS.RESPONSE_PARAM_NAME.getValue(), token.getParameterName());
+            response.setHeader(ApplicationConstants.CSRF_HEADERS.RESPONSE_TOKEN_NAME.getValue(), token.getToken());
         }
 
         filterChain.doFilter(request, response);

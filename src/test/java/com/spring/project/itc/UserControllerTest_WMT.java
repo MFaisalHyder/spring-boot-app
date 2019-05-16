@@ -4,18 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.project.config.BaseTest_WMT;
 import com.spring.project.constant.ApplicationConstants;
 import com.spring.project.controller.UserController;
-import com.spring.project.dto.EmployeeDTO;
+import com.spring.project.dto.RoleDTO;
+import com.spring.project.dto.UserDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Configuration is done properly, ComponentScan, JpaRepositories, Beans, and DataSource.</p>
  */
 
-@WebMvcTest(value = UserController.class, secure = false)
+//@WebMvcTest(value = UserController.class, secure = false) // to bypass spring security we need to mark secure = false
+@WebMvcTest(value = UserController.class)
 @DisplayName("UserControllerTest_WMT - WebMVCTest")
 class UserControllerTest_WMT extends BaseTest_WMT {
     /*
@@ -45,14 +49,19 @@ class UserControllerTest_WMT extends BaseTest_WMT {
     }
     */
 
+    private final MockMvc mockMvc;
+
     @Autowired
-    private ObjectMapper objectMapper;
+    public UserControllerTest_WMT(final MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
 
-    private static EmployeeDTO employee;
+    }
 
+    private static final Long ADMIN_ROLE_ID = -200L;
     private static final String EMIRATES_ID = "DXB_UAE_123457654321";
     private static final String FIRST_NAME = "Muhammad";
     private static final String LAST_NAME = "Hyder";
+    private static final String EMAIL = "def@ghi.com";
     private static final String STAFF_ID = "SE_007";
     private static final String PASSWORD = "12345ABCDEF";
 
@@ -62,45 +71,62 @@ class UserControllerTest_WMT extends BaseTest_WMT {
      */
     @BeforeAll
     void beforeAll() {
-        employee = new EmployeeDTO();
-        employee.setEmiratesID(EMIRATES_ID);
-        employee.setFirstName(FIRST_NAME);
-        employee.setLastName(LAST_NAME);
-        employee.setStaffID(STAFF_ID);
-        employee.setPassword(PASSWORD);
+        RoleDTO role = new RoleDTO();
+        role.setID(ADMIN_ROLE_ID);
+
+        UserDTO user = new UserDTO();
+        user.setEmiratesID(EMIRATES_ID);
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setEmail(EMAIL);
+        user.setStaffID(STAFF_ID);
+        user.setPassword(PASSWORD);
+        user.setRole(role);
 
     }
 
-    @Autowired
-    private MockMvc mockMvc;
-
+    /**
+     * Principal User : "john.Smith@gmail.com"
+     *
+     * @throws Exception in case of any interruption
+     */
     @Test
+    @WithUserDetails("john.Smith@gmail.com")
     void getUsersListControllerTest() throws Exception {
-        mockMvc.perform(get("/user/listAll").accept(MediaType.APPLICATION_JSON))
+        MvcResult mvcResult = mockMvc.perform(get("/user/listAll").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(ApplicationConstants.GeneralConstants.SUCCESS.getValue())))
-                .andDo(print());
+                .andDo(print())
+                .andReturn();
+
+        assertMvcResult(mvcResult);
 
     }
 
+    /**
+     * Principal User : "jushford@manu.com"
+     *
+     * @throws Exception in case of any interruption
+     */
     @Test
+    @WithUserDetails("jushford@manu.com")
     void getUserByEmiratesIDControllerTest() throws Exception {
         String EMIRATES_ID = "ABCDEFT12345";
 
-        mockMvc.perform(get("/user/emiratesID/" + EMIRATES_ID).accept(MediaType.APPLICATION_JSON))
+        MvcResult mvcResult = mockMvc.perform(get("/user/emiratesID/" + EMIRATES_ID).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(EMIRATES_ID)))
-                .andDo(print());
+                .andDo(print())
+                .andReturn();
 
+        assertMvcResult(mvcResult);
     }
 
-    @Test
-    void registerUserControllerTest() throws Exception {
-        mockMvc.perform(post("/user/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(employee))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+    private void assertMvcResult(MvcResult mvcResult) {
+        assertNotNull(mvcResult);
+        //this further checks if CSRF token is implemented properly for test cases as well
+        assertNotNull(mvcResult.getResponse().getHeader(ApplicationConstants.CSRF_HEADERS.RESPONSE_TOKEN_NAME.getValue()));
+
     }
 
 }
