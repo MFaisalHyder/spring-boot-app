@@ -14,12 +14,16 @@ Things which I kept in mind while developing this module:
 
 ### Aspects Covered
 * *Spring Boot*
-* *REST Services*
+* *Spring Security*
+* *Spring Security - CSRF Token*
+* *REST Service*
 * *Spring JPA (Hibernate)*
 * *Repository Pattern*
 * *Logging*
 * *Exception Handling*
-* *Testing*
+* *Junit w & w/o Spring Security*
+* *Junit - Integration Tests*
+* *Junit - Unit Tests*
 * *Dependency cleanup*
 
 ### Prerequisites
