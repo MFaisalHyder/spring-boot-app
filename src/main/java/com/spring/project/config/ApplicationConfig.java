@@ -4,6 +4,7 @@ import com.spring.project.constant.ApplicationConstants;
 import org.modelmapper.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,8 @@ import java.time.format.DateTimeFormatter;
 public class ApplicationConfig {
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(ApplicationConstants.DATE_FORMAT);
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT);
+    private final DateTimeFormatter dateTimeFormatter =
+            DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT);
 
     /*
     @Bean
@@ -51,9 +53,16 @@ public class ApplicationConfig {
 
         modelMapper.createTypeMap(String.class, LocalDateTime.class);
         modelMapper.addConverter(toStringDate);
+
         modelMapper.getTypeMap(String.class, LocalDateTime.class).setProvider(localDateProvider);
 
         return modelMapper;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+
+        return new BCryptPasswordEncoder();
     }
 
 }

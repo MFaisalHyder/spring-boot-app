@@ -5,29 +5,28 @@ import com.spring.project.service.UserDetailsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsServiceImplementation userDetailsService;
+    private UserDetailsServiceImplementation userDetailsService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SecurityConfig(final UserDetailsServiceImplementation userDetailsService) {
+    public SecurityConfig(UserDetailsServiceImplementation userDetailsService,
+                          PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
 
-    }
-
-    @Bean
-    BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -37,8 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/console/**").permitAll()
                 .antMatchers("/", "/greetUser", "/register", "/login", "/csrf-token").permitAll()
                 //.hasAuthority requires ROLE_ prefix to be declared
-                //.antMatchers("/user/**").hasAnyAuthority(ROLES.PREFIX.getValue() + ROLES.USER.getValue(), ROLES.PREFIX.getValue() + ROLES.ADMIN.getValue())
-                //.antMatchers("/admin/**").hasAuthority(ROLES.PREFIX.getValue() + ROLES.ADMIN.getValue()).anyRequest().authenticated()
+                //.antMatchers("/user/**").hasAnyAuthority(ROLES.PREFIX.getValue() + ROLES.USER.getValue(), ROLES
+                // .PREFIX.getValue() + ROLES.ADMIN.getValue())
+                //.antMatchers("/admin/**").hasAuthority(ROLES.PREFIX.getValue() + ROLES.ADMIN.getValue()).anyRequest
+                // ().authenticated()
                 //.hasRole automatically adds ROLE_ prefix
                 .antMatchers("/user/**").hasAnyRole(ROLES.USER.getValue(), ROLES.ADMIN.getValue())
                 .antMatchers("/admin/**").hasRole(ROLES.ADMIN.getValue()).anyRequest().authenticated()
@@ -51,7 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         /*
             here we are allowing '/register' only to be accessed without CSRF token.
             here we will need to add those end points with POST, PUT, DELETE for which we don't require client to send
-            CSRF token in request. If we don't want to allow such end points then we have to ask client layer to retrieve
+            CSRF token in request. If we don't want to allow such end points then we have to ask client layer to
+            retrieve
             csrf token first using '/csrf-token' end point.
          */
         httpSecurity.csrf().ignoringAntMatchers("/register");
@@ -64,10 +66,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Autowired
-    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider());
 
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(userDetailsService);
+
+        return provider;
     }
 
     @Override
