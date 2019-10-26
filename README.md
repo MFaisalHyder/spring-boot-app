@@ -28,7 +28,8 @@ Things which I kept in mind while developing this module:
 
 ### Prerequisites
 
-You are expected to have a basic knowlwdge of how Spring Framework works, what is, and why, Spring Boot is now preferred more than ever.
+You are expected to have a basic knowledge of how Spring Framework works, what is, and why, Spring Boot is now preferred
+ more than ever.
 
 * Java 8 or above
 * Gradle or Maven
