@@ -1,0 +1,202 @@
+ext {
+    springBootVersion = '2.1.3.RELEASE'
+    springFrameworkVersion = '5.1.4.RELEASE'
+    jackSonVersion = '2.9.7'
+    junitJupiterVersion = '5.3.2'
+    junitPlatformLauncherVersion = '1.3.1'
+    mockitoVersion = '2.23.4'
+    hamcrestVersion = '1.3'
+    springDataJPAVersion = '2.1.6.RELEASE'
+    hibernateVersion = '5.3.7.Final'
+    h2Version = '1.4.197'
+    log4j2Version = '2.11.1'
+    bCryptVersion = '0.7.0'
+    apacheBeanUtils = '1.9.3'
+    modelMapper = '2.3.3'
+}
+
+buildscript {
+    ext {
+        springBootVersion = '2.1.3.RELEASE'
+    }
+
+    repositories {
+        //mavenCentral()
+        //In order to access company hosted libraries use like this
+        maven {
+            url "http://repository.abc.com/repository/maven/"
+        }
+    }
+
+    dependencies {
+        classpath group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: "${springBootVersion}"
+    }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'
+
+group 'TestProject'
+version '1.0'
+
+sourceSets {
+    main.java.srcDir "src/main/java"
+    main.resources.srcDir "src/main/resources"
+    test.java.srcDir "src/test/java"
+    test.resources.srcDir "src/test/resources"
+}
+
+war {
+    baseName = 'spring-boot-gradle-project'
+    version = '1.0'
+}
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    // From Gradle 4.6+ we need to separately declare Annotation Processors to avoid slow build compilation.
+    // If our code is not using any Processor then we can declare compile arguments like below;
+    options.compilerArgs += ["-proc:none"]
+
+    // If our code requires any Processor at compile time, then declare them in dependencies, it's more preferable.
+}
+
+compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.compilerArgs += ["-proc:none"]
+}
+
+repositories {
+    //mavenCentral()
+    maven {
+        url "http://repository.abc.com/repository/maven/"
+    }
+}
+
+/*-- IMPORTANT--*/
+/**
+ * When we use any of the starter-* dependency which depends on its parent spring-boot-starter, which requires
+ * spring-boot-starter-logging as well, so when not using out of the box Logging then add this configuration
+ */
+
+configurations {
+    compile.exclude module: 'spring-boot-starter-logging'
+}
+
+
+dependencies {
+    /* This is a beauty of Spring boot that it packages all required dependencies under one umbrella */
+    /* But the reason to not use it is that excluding unwanted dependencies explicitly is cumbersome */
+    /* Same goes for all its starter-* child dependencies, they combine all relative dependencies in single artifact*/
+    //compile("org.springframework.boot:spring-boot-starter-web")
+
+    /*-- Spring boot --*/
+    compile group: 'org.springframework.boot', name: 'spring-boot', version: "${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: "${springBootVersion}"
+
+    /*-- Spring Web Dependencies --*/
+    compile group: 'org.springframework', name: 'spring-web', version: "${springFrameworkVersion}"
+    compile group: 'org.springframework', name: 'spring-webmvc', version: "${springFrameworkVersion}"
+
+    /**-- Spring Aspect --*/
+    // It is required when we enable auditing
+    compile group: 'org.springframework', name: 'spring-aspects', version: "${springFrameworkVersion}"
+
+    /**-- Spring Security Dependencies --**/
+    compile group: 'org.springframework.security', name: 'spring-security-web', version: "${springFrameworkVersion}"
+    compile group: 'org.springframework.security', name: 'spring-security-config', version: "${springFrameworkVersion}"
+    compile group: 'org.springframework.security', name: 'spring-security-crypto', version: "${springFrameworkVersion}"
+    testCompile group: 'org.springframework.security', name: 'spring-security-test', version: "${springFrameworkVersion}"
+
+    /*-- Logging --*/
+    /* Logging based on log4j2 : log4j2 is enhancement over log4j and provides better performance than logback */
+    //compile('org.springframework.boot:spring-boot-starter-log4j2')
+
+    /* If our code requires any Processor to be able to compile then we need to declare then separately */
+    // annotationProcessor("org.apache.logging.log4j:log4j-api:${log4j2Version}")
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: "${log4j2Version}"
+
+    //annotationProcessor("org.apache.logging.log4j:log4j-core:${log4j2Version}")
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: "${log4j2Version}"
+
+    // Not required
+    //annotationProcessor("org.apache.logging.log4j:log4j-jcl:${log4j2Version}")
+    compile group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: "${log4j2Version}"
+
+    // annotationProcessor("org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}")
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: "${log4j2Version}"
+    /*-- Logging --*/
+
+    /* Jackson Mapper */
+    // For JSON specific implementations
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${jackSonVersion}"
+
+    // For JSON properties like @JsonIgnore, @JsonIgnoreProperties etc
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${jackSonVersion}"
+
+    // For serialization of Objects into JSON format. Depends on both above packages
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jackSonVersion}"
+    /* Jackson Mapper */
+
+    /* Spring Data JPA */
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: "${springDataJPAVersion}"
+
+    /* Spring Hibernate */
+    compile group: 'org.hibernate', name: 'hibernate-core', version: "${hibernateVersion}"
+
+    /* H2 DataBase */
+    runtime group: 'com.h2database', name: 'h2', version: "${h2Version}"
+
+    /* Embedded Tomcat */
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: "${springBootVersion}"
+
+    /* Test case Libraries */
+    //It adds many other dependencies which are not even required
+    //testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    testCompile group: 'org.springframework', name: 'spring-test', version: "${springFrameworkVersion}"
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-test', version: "${springBootVersion}"
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-test-autoconfigure', version: "${springBootVersion}"
+
+    /* JUnit 4 */
+    /*
+    //These two dependencies are required to make JUnit 4 and older test cases executable with JUnit 5
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.3.2'
+    */
+    /* JUnit 4 */
+
+    /* JUnit5 */
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "${junitJupiterVersion}"
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: "${junitJupiterVersion}"
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "${junitJupiterVersion}"
+    // This is required else IDEs won't be able to run test cases based on JUnit 5
+    testRuntime group: 'org.junit.platform', name: 'junit-platform-launcher', version: "${junitPlatformLauncherVersion}"
+    /* JUnit5 */
+
+    /* Mockito 2 */
+    testCompile group: 'org.mockito', name: 'mockito-core', version: "${mockitoVersion}"
+    testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: "${mockitoVersion}"
+    /* Mockito 2 */
+
+    /* Hamcrest */
+    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: "${hamcrestVersion}"
+    /* Hamcrest */
+    /* Test case Libraries */
+
+    /* Apache Commons bean Utils */
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: "${apacheBeanUtils}"
+
+    /* Model Mapper */
+    compile group: 'org.modelmapper', name: 'modelmapper', version: "${modelMapper}"
+
+}
+
+test {
+    //This will execute all test cases with from here!
+    useJUnitPlatform()
+}
