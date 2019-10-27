@@ -1,47 +1,17 @@
 package com.spring.project.dto;
 
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 
+@Data
 public class Response implements Serializable {
 
     private HttpStatus httpStatus;
     private String errorCode;
     private String message;
     private String details;
-
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    public void setHttpStatus(HttpStatus httpStatus) {
-        this.httpStatus = httpStatus;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
 
     public static final class ResponseBuilder {
         private HttpStatus httpStatus;
@@ -90,13 +60,12 @@ public class Response implements Serializable {
     }
 
     public static Response prepareErrorResponse(HttpStatus status, String errorCode, String errorMessage) {
-        Response errorResponse = new Response.ResponseBuilder()
+
+        return new ResponseBuilder()
                 .setStatus(status)
                 .setErrorCode(errorCode)
                 .setMessage(errorMessage)
                 .build();
-
-        return errorResponse;
     }
 
 }
