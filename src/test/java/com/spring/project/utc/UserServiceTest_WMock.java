@@ -1,24 +1,29 @@
 package com.spring.project.utc;
 
-import com.spring.project.dto.EmployeeDTO;
-import com.spring.project.entity.Employee;
-import com.spring.project.entity.Role;
-import com.spring.project.repository.UserRepository;
+import com.spring.project.constant.ApplicationConstants;
+import com.spring.project.dto.RoleDTO;
+import com.spring.project.dto.UserDTO;
 import com.spring.project.service.UserService;
 import com.spring.project.utility.PasswordUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 
 /**
  * Unit test cases are carried out using Mockito framework. Since it is Unit testing, we are more focused on our
@@ -26,56 +31,104 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UserServiceTest_WithMock")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserServiceTest_WMock {
 
     /*
     @Mock creates Mock of the annotated class
      */
     @Mock
-    private UserRepository userRepository;
+    private ModelMapper modelMapper;
 
     /*
     @InjectMocks also creates Mock implementation of the annotated class and injects other @Mocks classes into it
      */
-    @InjectMocks
+    @Mock
     private UserService userService;
 
-    @Mock
-    private PasswordUtil passwordUtil;
+    @Configuration
+    class Config {
 
+        @Bean
+        PasswordUtil passwordUtil() {
+
+            return new PasswordUtil(passwordEncoder());
+        }
+
+        @Bean
+        BCryptPasswordEncoder passwordEncoder() {
+
+            return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public ModelMapper modelMapper() {
+            modelMapper = new ModelMapper();
+
+            Provider<LocalDateTime> localDateProvider = new AbstractProvider<LocalDateTime>() {
+                @Override
+                public LocalDateTime get() {
+                    return LocalDateTime.now();
+                }
+            };
+
+            Converter<String, LocalDateTime> toStringDate = new AbstractConverter<String, LocalDateTime>() {
+                @Override
+                protected LocalDateTime convert(String source) {
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern(ApplicationConstants.DATE_TIME_FORMAT);
+
+                    return LocalDateTime.parse(source, format);
+                }
+            };
+
+
+            modelMapper.createTypeMap(String.class, LocalDateTime.class);
+            modelMapper.addConverter(toStringDate);
+            modelMapper.getTypeMap(String.class, LocalDateTime.class).setProvider(localDateProvider);
+
+            return modelMapper;
+        }
+    }
+
+    @SuppressWarnings({"unchecked"})
     @Test
     @DisplayName("Test getAllUsers()")
-    void testGetAllUsers() throws Exception {
-        List<Employee> employeeList = new ArrayList<>();
+    void testGetAllUsers() {
+        String EmiratesID = "ABCDEF12345";
+        String FirstName = "Muhammad Faisal";
 
-        Role userRole = new Role();
+        LinkedHashMap<String, Object> usersList = new LinkedHashMap<>();
+        List<UserDTO> userList = new ArrayList<>();
+
+        RoleDTO userRole = new RoleDTO();
         userRole.setID(1L);
-        userRole.setCreatedDate(LocalDateTime.now());
+        userRole.setCreatedDate(LocalDateTime.now().toString());
         userRole.setCreatedBy("Muhammad Faisal Hyder");
         userRole.setName("USER");
 
-        Employee employee = new Employee();
-        employee.setID(1L);
-        employee.setCreatedBy("Muhammad Faisal Hyder");
-        employee.setCreatedDate(LocalDateTime.now());
-        employee.setEmiratesID("ABCDEF12345");
-        employee.setFirstName("Muhammad Faisal");
-        employee.setLastName("Hyder");
-        employee.setPassword(passwordUtil.encryptPassword("abcdef12345"));
-        employee.setRole(userRole);
+        UserDTO user = new UserDTO();
+        user.setID(1L);
+        user.setCreatedBy("Muhammad Faisal Hyder");
+        user.setCreatedDate(LocalDateTime.now().toString());
+        user.setEmiratesID(EmiratesID);
+        user.setFirstName(FirstName);
+        user.setLastName("Hyder");
+        user.setPassword(new Config().passwordUtil().encryptPassword("abcdef12345"));
+        user.setRole(userRole);
 
-        employeeList.add(employee);
+        userList.add(user);
+        usersList.put("status", ApplicationConstants.GeneralConstants.SUCCESS);
+        usersList.put("usersList", userList);
 
-        when(userRepository.findAll()).thenReturn(employeeList);
+        doReturn(usersList).when(userService).findAllUsers();
 
-        @SuppressWarnings({"unchecked"})
-        List<EmployeeDTO> employees = (List<EmployeeDTO>) userService.findAllUsers().get("usersList");
+        List<UserDTO> allUsers = (List<UserDTO>) userService.findAllUsers().get("usersList");
 
         assertAll("It should return what we have added above",
-                () -> assertNotNull(employee),
-                () -> assertEquals(1, employees.size()),
-                () -> assertEquals("ABCDEF12345", employees.get(0).getEmiratesID()),
-                () -> assertEquals("Muhammad Faisal", employees.get(0).getFirstName())
+                () -> assertNotNull(user),
+                () -> assertEquals(1, allUsers.size()),
+                () -> assertEquals(EmiratesID, allUsers.get(0).getEmiratesID()),
+                () -> assertEquals(FirstName, allUsers.get(0).getFirstName())
         );
 
     }
