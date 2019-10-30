@@ -50,3 +50,8 @@ I have tried my best to use the latest(stable) available libraries!
 * Logging [log4j2(2.11.1) - [LatestVersion](https://mvnrepository.com/artifact/org.apache.logging.log4j)]
 * Tomcat Embedded(2.1.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat)
 * Dependency Management [Gradle(5.0) - [LatestVersion](https://gradle.org/releases/)]
+
+## How to Set-up
+* Install [Gralde](https://gradle.org/install/)
+* Clone this repo in local machine and run *"gradle clean build"*
+* For setting it up in [IntelliJ](https://www.jetbrains.com/help/idea/gradle.html)
