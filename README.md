@@ -40,8 +40,8 @@ I have tried my best to use the latest(stable) available libraries!
 
 * Java8(1.8u66) - [Latest Java8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * Spring Framework-5(5.2.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework/spring-web)
-* Spring Boot-2(2.2.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework
-.boot/spring-boot)
+* Spring Boot-2(2.2.0.RELEASE) -
+  [LatestVersion](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot)
 * Spring Data JPA(2.1.2.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa)
 * Hibernate(5.3.7.Final) - [LatestVersion](https://mvnrepository.com/artifact/org.hibernate/hibernate-core)
 * H2 Database(1.4.197) - [LatestVersion](https://mvnrepository.com/artifact/com.h2database/h2)
@@ -50,5 +50,3 @@ I have tried my best to use the latest(stable) available libraries!
 * Logging [log4j2(2.11.1) - [LatestVersion](https://mvnrepository.com/artifact/org.apache.logging.log4j)]
 * Tomcat Embedded(2.1.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat)
 * Dependency Management [Gradle(5.0) - [LatestVersion](https://gradle.org/releases/)]
-
-
