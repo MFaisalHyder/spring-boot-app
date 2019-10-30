@@ -39,12 +39,13 @@ You are expected to have a basic knowledge of how Spring Framework works, what i
 I have tried my best to use the latest(stable) available libraries!
 
 * Java8(1.8u66) - [Latest Java8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* Spring Framework-5(5.1.2.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework/spring-web)
-* Spring Boot-2(2.1.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot)
+* Spring Framework-5(5.2.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework/spring-web)
+* Spring Boot-2(2.2.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework
+.boot/spring-boot)
 * Spring Data JPA(2.1.2.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa)
 * Hibernate(5.3.7.Final) - [LatestVersion](https://mvnrepository.com/artifact/org.hibernate/hibernate-core)
 * H2 Database(1.4.197) - [LatestVersion](https://mvnrepository.com/artifact/com.h2database/h2)
-* JUnit5(5.3.2) - [LatestVersion](https://mvnrepository.com/artifact/org.junit.jupiter)
+* JUnit5(5.5.2) - [LatestVersion](https://mvnrepository.com/artifact/org.junit.jupiter)
 * Mockito(2.23.4) - [LatestVersion](https://mvnrepository.com/artifact/org.mockito/mockito-core)
 * Logging [log4j2(2.11.1) - [LatestVersion](https://mvnrepository.com/artifact/org.apache.logging.log4j)]
 * Tomcat Embedded(2.1.0.RELEASE) - [LatestVersion](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat)
