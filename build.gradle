@@ -1,7 +1,7 @@
 ext {
     springBootVersion = '2.2.0.RELEASE'
     springFrameworkVersion = '5.2.0.RELEASE'
-    jackSonVersion = '2.9.7'
+    jacksonVersion = '2.9.7'
     junitJupiterVersion = '5.5.2'
     junitPlatformLauncherVersion = '1.5.2'
     mockitoVersion = '2.23.4'
@@ -138,13 +138,13 @@ dependencies {
 
     /* Jackson Mapper */
     // For JSON specific implementations
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${jackSonVersion}"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${jacksonVersion}"
 
     // For JSON properties like @JsonIgnore, @JsonIgnoreProperties etc
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${jackSonVersion}"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${jacksonVersion}"
 
     // For serialization of Objects into JSON format. Depends on both above packages
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jackSonVersion}"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
     /* Jackson Mapper */
 
     /* Spring Data JPA */
