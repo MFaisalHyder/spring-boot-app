@@ -11,7 +11,7 @@ class LoggingTest {
     @DisplayName("testLogging")
     void testLogging() {
         Log4j2Config log4j2Config = new Log4j2Config();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             log4j2Config.performLogging();
         }
 
