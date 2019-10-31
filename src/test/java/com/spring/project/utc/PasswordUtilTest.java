@@ -57,10 +57,12 @@ class PasswordUtilTest {
         List<String> passwords = new ArrayList<>(Arrays.asList("12345abc", "12345def", "12345ghi", "12345jkl",
                 "12345mno", "12345pqr", "12345stu", "12345vwx", "12345yza", "12345bcd"));
 
-        for (String rawPassword : passwords) {
-            System.out.println(passwordUtil.encryptPassword(rawPassword));
+        passwords.forEach(rawPassword -> {
+            String password = passwordUtil.encryptPassword(rawPassword);
+            System.out.println(password);
             assertTrue(passwordUtil.doesPasswordMatch(rawPassword, passwordUtil.encryptPassword(rawPassword)));
-        }
+        });
+
     }
 
 }
