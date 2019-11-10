@@ -1,4 +1,4 @@
-package com.spring.project.dto;
+package com.spring.project.response;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import java.io.Serializable;
 
 @Data
-public class Response implements Serializable {
+public class ExceptionResponse implements Serializable {
 
     private HttpStatus httpStatus;
     private String errorCode;
@@ -15,7 +15,7 @@ public class Response implements Serializable {
 
     public static final class ResponseBuilder {
         private HttpStatus httpStatus;
-        private String errorCode;
+        private String code;
         private String message;
         private String details;
 
@@ -28,8 +28,8 @@ public class Response implements Serializable {
             return this;
         }
 
-        public ResponseBuilder setErrorCode(String errorCode) {
-            this.errorCode = errorCode;
+        public ResponseBuilder setCode(String code) {
+            this.code = code;
 
             return this;
         }
@@ -46,24 +46,24 @@ public class Response implements Serializable {
             return this;
         }
 
-        public Response build() {
-            Response response = new Response();
+        public ExceptionResponse build() {
+            ExceptionResponse exceptionResponse = new ExceptionResponse();
 
-            response.httpStatus = this.httpStatus;
-            response.errorCode = this.errorCode;
-            response.message = this.message;
-            response.details = this.details;
+            exceptionResponse.httpStatus = this.httpStatus;
+            exceptionResponse.errorCode = this.code;
+            exceptionResponse.message = this.message;
+            exceptionResponse.details = this.details;
 
-            return response;
+            return exceptionResponse;
         }
 
     }
 
-    public static Response prepareErrorResponse(HttpStatus status, String errorCode, String errorMessage) {
+    public static ExceptionResponse prepareErrorResponse(HttpStatus status, String errorCode, String errorMessage) {
 
         return new ResponseBuilder()
                 .setStatus(status)
-                .setErrorCode(errorCode)
+                .setCode(errorCode)
                 .setMessage(errorMessage)
                 .build();
     }
